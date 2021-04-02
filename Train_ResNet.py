@@ -45,7 +45,7 @@ parser.add_argument('--pool',default='avg', type=str, help='pool avg')
 parser.add_argument('--data_dir',default='./data/train',type=str, help='training dir path')
 parser.add_argument('--train_all', action='store_true', help='use all training data' )
 parser.add_argument('--color_jitter', action='store_true', help='use color jitter in training' )
-parser.add_argument('--batch_size', default=2, type=int, help='batchsize')
+parser.add_argument('--batch_size', default=3, type=int, help='batchsize')
 parser.add_argument('--stride', default=2, type=int, help='stride')
 parser.add_argument('--pad', default=10, type=int, help='padding')
 parser.add_argument('--h', default=384, type=int, help='height')
@@ -94,7 +94,7 @@ if len(gpu_ids)>0:
 
 
     
-trainImgSet = getdatasets()
+trainImgSet = torch.load('dataTemp/Datasets100')#getdatasets()
 
 train_loader = DataLoader(dataset=trainImgSet,batch_size=opt.batch_size ,shuffle=False)
 
@@ -111,7 +111,7 @@ train_loader = DataLoader(dataset=trainImgSet,batch_size=opt.batch_size ,shuffle
 # In the following, parameter ``scheduler`` is an LR scheduler object from
 # ``torch.optim.lr_scheduler``.
 device = torch.device("cpu")
-use_gpu = False
+use_gpu = True
 if use_gpu:
     device = torch.device("cuda")
     use_gpu = torch.cuda.is_available()
@@ -157,7 +157,7 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
                   
             feature_loss = 0.0
             
-            for i in range(3):
+            for i in range(2):
                 for j in range(i+1,3):
                     anchor = result[i]
                     positive = result[j]

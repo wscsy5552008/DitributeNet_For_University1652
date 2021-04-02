@@ -5,7 +5,7 @@ Created on Sun Mar 21 13:58:27 2021
 @author: Jinda
 """
 
-
+import torch
 import os
 import numpy as np
 from PIL import Image
@@ -37,7 +37,7 @@ def getdatasets():
             anfolder_name = folder_name
             anfolder_root = target_drone + '/' + anfolder_name
             continue
-        if fi >= 30:
+        if fi >=7:
             break
         print('………………reading………………:%d/%d'%(fi,len(os.listdir(target_drone))))
         
@@ -102,6 +102,7 @@ def getdatasets():
             
             item = (ground_tensor,drone_tensor,satellite_tensor,anground_tensor ,androne_tensor,ansatellite_tensor)   
             datasets.append(item)
+    #torch.save(datasets,"dataTemp/Datasets200")
     return datasets
             
             

@@ -5,7 +5,9 @@ Created on Mon Mar 15 11:06:01 2021
 @author: Jinda
 """
 import torch.nn as nn
+import torch
 import math
+from torch.autograd import Variable
 
 triplet_loss = nn.TripletMarginLoss(margin=1, p=2)
 #lp_loss l2范数，应该是计算为欧氏距离
@@ -41,21 +43,34 @@ def FeaturesLossWithoutSample(manchor,mpositive,mnegative):
     return totalLoss
 
 def UncertaintyLoss(disanchor):
+    loss = TripletUncertaintyLoss()
+    return loss(disanchor)
+
+class TripletUncertaintyLoss(nn.Module):
     
-    m = len(disanchor)
-    n = len(disanchor[0])
-    #each vector has a diagno matrix
-    sigma =0.0
-    sumD = 0.0
-    for i in range(m):
+    def __init__(self,cuda=False):
+        super(TripletUncertaintyLoss, self).__init__()
+        self.cuda = cuda
         
-        for j in range(n):
-            sumD += disanchor[i][j]*disanchor[i][j]
-        if sumD != 0 :
-            sigma += math.log(sumD)
-    totalLoss = m/2*(math.log(math.pi) + 1) + 1/2 * sigma
-    
-    return totalLoss
+    def forward(self,disanchor):
+        m = len(disanchor)
+        n = len(disanchor[0])
+        #each vector has a diagno matrix
+        
+        
+        sigma = torch.zeros(size=(1,1), dtype= float)
+        sumD = torch.zeros(size=(1,1), dtype= float)
+        if self.cuda == True:
+            sigma = Variable(sigma.cuda().detach())
+            sumD = Variable(sumD.cuda().detach())
+        for i in range(m):    
+            for j in range(n):
+                sumD = sumD + disanchor[i][j]*disanchor[i][j]
+            if sumD != 0 :
+                sigma = sigma + torch.log(sumD)
+        totalLoss = m/2*(math.log(math.pi) + 1) + 1/2 * sigma
+        
+        return totalLoss
     
 # out = (长度为numclasss的均值向量，方差向量，) 
 # result = (out1,out2,out3,out4,out5,out6)

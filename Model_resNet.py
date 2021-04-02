@@ -63,8 +63,8 @@ class ResNet(nn.Module):
 class PreTrainResNet(nn.Module):
     def __init__(self, num_classes = 128):
         super(PreTrainResNet, self).__init__()
-        self.gmodel= models.resnet18(pretrained=False)
-        self.sdmodel= models.resnet18(pretrained=False)
+        self.gmodel= models.resnet50(pretrained=False)
+        self.sdmodel= models.resnet50(pretrained=False)
         #self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
         #                       bias=False)
         #self.layer1 = self._make_layer(block, 64, layers[0])

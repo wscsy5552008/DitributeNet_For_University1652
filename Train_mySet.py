@@ -34,7 +34,7 @@ except ImportError: # will be 3.x series
 
 import math
 from Model_distributeNet import PreTrainDisNet as disNet
-from LossFunc_lossCalc import FeaturesLoss,UncertaintyLoss
+from LossFunc_lossCalc import FeaturesLoss,TripletUncertaintyLoss
 ######################################################################
 # Options
 # --------
@@ -52,7 +52,7 @@ parser.add_argument('--h', default=384, type=int, help='height')
 parser.add_argument('--w', default=384, type=int, help='width')
 parser.add_argument('--views', default=3, type=int, help='the number of views')
 parser.add_argument('--loss_lamda', default=16, type=int, help='Ditribute_Loss Lamda' )
-parser.add_argument('--loss_k',  default=1, type=int, help='frature_loss K' )
+parser.add_argument('--loss_k',  default=0.1, type=int, help='frature_loss K' )
 parser.add_argument('--erasing_p', default=0, type=float, help='Random Erasing probability, in [0,1]')
 parser.add_argument('--use_dense', action='store_true', help='use densenet121' )
 parser.add_argument('--use_NAS', action='store_true', help='use NAS' )
@@ -132,7 +132,6 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
     #warm_iteration = round(dataset_sizes['satellite']/opt.batch_size)*opt.warm_epoch # first 5 epoch
        
     # zero the parameter gradients
-    optimizer.zero_grad()
     for epoch in range(num_epochs-start_epoch):
         epoch = epoch + start_epoch
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
@@ -151,12 +150,20 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
                 g1,d1,s1 = Variable(g1.cuda().detach()),Variable(d1.cuda().detach()),Variable(s1.cuda().detach())
                 g2,d2,s2 = Variable(g2.cuda().detach()),Variable(d2.cuda().detach()),Variable(s2.cuda().detach())
 
+            
             result = model(g1,d1,s1,g2,d2,s2)
                   
-            feature_loss = 0.0
-            unsertainty_loss = 0.0      
+            feature_loss = torch.zeros(size=(1,1),dtype = float)
+            unsertainty_loss =  torch.zeros(size=(1,1),dtype = float) 
+            if use_gpu:
+                feature_loss =  Variable(feature_loss.cuda().detach())
+                unsertainty_loss =  Variable(unsertainty_loss.cuda().detach())
+                
+            
             for i in range(3):
-                for j in range(i+1,3):
+                for j in range(3):
+                    if i==j:
+                        continue
                     anchor = result[i]
                     positive = result[j]
                     negative = result[j+3]
@@ -178,20 +185,22 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
                     
                     unsertainty_loss2 = UncertaintyLoss(disanchor=anchor[1])
                     
-                    feature_loss = feature_loss1 + feature_loss2
-                    unsertainty_loss = unsertainty_loss1 + unsertainty_loss2            
+                    feature_loss = feature_loss + feature_loss1 + feature_loss2
+                    unsertainty_loss = unsertainty_loss + unsertainty_loss1 + unsertainty_loss2            
            
             
                    
+            optimizer.zero_grad()
+    
+            if unsertainty_loss < opt.loss_lamda :
+                runsertainty_loss = opt.loss_lamda - unsertainty_loss;
+                runsertainty_loss.backward(retain_graph=True)
+            feature_loss.backward()
+                
+            optimizer.step()
+                
             
-                    if unsertainty_loss < opt.loss_lamda :
-                        unsertainty_loss = opt.loss_lamda - unsertainty_loss;
-                        unsertainty_loss.backward()
-                    feature_loss.backward()
-                    optimizer.step()
-                    optimizer.zero_grad()
-            
-                    print('[epoch:%d, iter:%d/%d] feature_loss: %.05f | real_unsertainty-Loss: %.05f ' 
+            print('[epoch:%d, iter:%d/%d] feature_loss: %.05f | real_unsertainty-Loss: %.05f ' 
                           % (epoch + 1, index, len(train_loader) ,feature_loss,unsertainty_loss ))
 
         save_network(model, opt.name, epoch)
@@ -223,6 +232,8 @@ optimizer_ft = optim.SGD([
 
 # Decay LR by a factor of 0.1 every 40 epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=80, gamma=0.1)
+
+UncertaintyLoss = TripletUncertaintyLoss(use_gpu)
 
 if __name__ == '__main__':
     model = train_model(model, FeaturesLoss, UncertaintyLoss, optimizer_ft, exp_lr_scheduler)

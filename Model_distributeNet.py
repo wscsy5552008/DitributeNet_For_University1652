@@ -66,8 +66,8 @@ class DisNet(nn.Module):
 class PreTrainDisNet(nn.Module):
     def __init__(self, num_classes = 512,ccuda=False):
         super(PreTrainDisNet, self).__init__()
-        self.gmodel= models.resnet34(pretrained=True)
-        self.sdmodel = models.resnet34(pretrained=True)
+        self.gmodel= models.resnet18(pretrained=False)
+        self.sdmodel = models.resnet18(pretrained=False)
         #self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
         #                       bias=False)
         #self.layer1 = self._make_layer(block, 64, layers[0])
@@ -108,26 +108,28 @@ class PreTrainDisNet(nn.Module):
 
             out = self.sddislayer(out)
         return out
-    
-    def forward(self, x1,x2=None,x3=None,x4=None,x5=None,x6=None):
-        if x2==None :#only one
-            return self.forward_one(x1)
-        elif x5==None:#for ground & satelite
-            return self.forward_one(x1),self.forward_one(x2),self.forward_one(x3),self.forward_one(x4)
+         
+    def forward(self, x1=None,x2=None,x3=None,x4=None,x5=None,x6=None):
+        if x2==None :#only for ground
+            return self.gmodel(x1)
+        elif x1==None :#only for satelite
+            return self.sdmodel(x2)
+        elif x3==None:#for ground & satelite
+            self.ground = True
+            y1 = self.forward_one(x1)
+            self.ground = False
+            y2 = self.forward_one(x2)
+            return y1,y2
         else:#for all
             self.ground = True
             y1 = self.forward_one(x1)
-            y2 = self.forward_one(x2)
-            self.ground = False
-            
-            y3 = self.forward_one(x3)
             y4 = self.forward_one(x4)
-            
+            self.ground = False
+            y2 = self.forward_one(x2)
+            y3 = self.forward_one(x3)
             y5 = self.forward_one(x5)
             y6 = self.forward_one(x6)
-            return y1,y2,y3,y4,y5,y6
-
-        
+            return y1,y2,y3,y4,y5,y6   
         
         
         
