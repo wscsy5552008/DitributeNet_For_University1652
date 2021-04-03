@@ -4,7 +4,7 @@ Created on Sun Mar 21 13:58:27 2021
 
 @author: Jinda
 """
-
+import Model_distributeNet as DisNet
 import torch
 import os
 import numpy as np
@@ -16,6 +16,9 @@ target_ground = '../data/train/street'
 target_satellite = '../data/train/satellite'
 #target_root = 'data/train/google'
 
+target_test_satellite = '../data/test/gallery_satellite'
+target_test_ground = '../data/test/gallery_street'
+
 def pad(inp, pad = 3):
     #print(inp.size)
     h, w = inp.size
@@ -23,7 +26,50 @@ def pad(inp, pad = 3):
     bg[pad:pad+h, pad:pad+w, :] = inp
     return bg
 
-
+def getsatedatasets(model):
+    return getdatasets(model,target_test_satellite)
+    
+def getgrounddatasets(model):
+    return getdatasets(model,target_test_ground)
+    
+def getdatasets(model,path):
+    transform1 = transforms.Compose([
+        transforms.CenterCrop((384,384)), # 只能对PIL图片进行裁剪
+        transforms.ToTensor(),
+        ]
+        )
+    datasets = []
+    label = []
+    for fi,folder_name in enumerate(os.listdir(path),0):
+        
+        folder_root = path + '/' + folder_name
+        if not os.path.isdir(folder_root):
+            continue
+        for img_name in os.listdir(folder_root):
+            img_path = folder_root + img_name
+            #读取图片
+            sate_view = Image.open(img_path)          
+            sate_view = sate_view.convert('RGB')
+            sate_tensor = transform1(sate_view)
+            
+            with torch.no_grad():
+                result = model(x2 = sate_tensor.unsqueeze(0))
+            if isinstance(model, DisNet):
+                # result:  avg,dis,self.getSamples(avg,dis)
+                # treat dis as a possibility?
+                
+                # or cal to a new one
+                samples = result[2]
+                
+                for i,item in enumerate(samples,0):
+                    result[0]+=item
+                tmp = result[0]/i
+                result = tmp
+                
+            label.append(folder_name)
+            datasets.append(result)
+    return label,datasets
+            
 def getdatasets():
     transform1 = transforms.Compose([
         transforms.CenterCrop((384,384)), # 只能对PIL图片进行裁剪
@@ -37,7 +83,7 @@ def getdatasets():
             anfolder_name = folder_name
             anfolder_root = target_drone + '/' + anfolder_name
             continue
-        if fi >=100:
+        if fi >=10:
             break
         print('………………reading………………:%d/%d'%(fi,len(os.listdir(target_drone))))
         

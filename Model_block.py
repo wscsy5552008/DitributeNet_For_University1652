@@ -8,6 +8,7 @@ Created on Sun Mar 21 13:44:12 2021
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.autograd import Variable
 import numpy as np
 
 class ResBlock(nn.Module):
@@ -70,7 +71,8 @@ class DisBlock(nn.Module):
         #avg = self.fc(avg)
         avg = F.relu(avg).reshape(-1,self.num_classes)
         
-        dis = self.disLayer(x)
+        disx = Variable(x.detach())
+        dis = self.disLayer(disx)
         dis = F.avg_pool2d(dis,4)    
         
         dis = torch.flatten(dis, 1)

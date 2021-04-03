@@ -111,7 +111,7 @@ train_loader = DataLoader(dataset=trainImgSet,batch_size=opt.batch_size ,shuffle
 # In the following, parameter ``scheduler`` is an LR scheduler object from
 # ``torch.optim.lr_scheduler``.
 device = torch.device("cpu")
-use_gpu = True
+use_gpu = False
 if use_gpu:
     device = torch.device("cuda")
     use_gpu = torch.cuda.is_available()
@@ -130,12 +130,17 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
     #best_acc = 0.0
     #warm_up = 0.1 # We start from the 0.1*lrRate
     #warm_iteration = round(dataset_sizes['satellite']/opt.batch_size)*opt.warm_epoch # first 5 epoch
-       
+    
     # zero the parameter gradients
     for epoch in range(num_epochs-start_epoch):
+
+        filepath = 'train_log/train_log'+str(epoch)+'.txt'
+        logfile = open(filepath, "w")   
+        
         epoch = epoch + start_epoch
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
         print('-' * 10)
+        print('-' * 10,file=logfile)
         # Each epoch has a training and validation phase
 
         model.train(True)  # Set model to training mode
@@ -202,9 +207,13 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             
             print('[epoch:%d, iter:%d/%d] feature_loss: %.05f | real_unsertainty-Loss: %.05f ' 
                           % (epoch + 1, index, len(train_loader) ,feature_loss,unsertainty_loss ))
+            print('[epoch:%d, iter:%d/%d] feature_loss: %.05f | real_unsertainty-Loss: %.05f ' 
+                          % (epoch + 1, index, len(train_loader) ,feature_loss,unsertainty_loss ),file=logfile)
+
 
         save_network(model, opt.name, epoch)
-       
+        logfile.close()
+        
         time_elapsed = time.time() - since
         print('Training complete in {:.0f}m {:.0f}s'.format(
             time_elapsed // 60, time_elapsed % 60))

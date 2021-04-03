@@ -93,7 +93,7 @@ class PreTrainDisNet(nn.Module):
             out = self.gmodel.layer2(out)
             out = self.gmodel.layer3(out)
             out = self.gmodel.layer4(out)
-
+            
             out = self.gdislayer(out)
         else:
 
