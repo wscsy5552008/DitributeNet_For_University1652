@@ -37,7 +37,7 @@ def getdatasets():
             anfolder_name = folder_name
             anfolder_root = target_drone + '/' + anfolder_name
             continue
-        if fi >=7:
+        if fi >=100:
             break
         print('………………reading………………:%d/%d'%(fi,len(os.listdir(target_drone))))
         

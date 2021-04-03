@@ -66,8 +66,8 @@ class DisNet(nn.Module):
 class PreTrainDisNet(nn.Module):
     def __init__(self, num_classes = 512,ccuda=False):
         super(PreTrainDisNet, self).__init__()
-        self.gmodel= models.resnet18(pretrained=False)
-        self.sdmodel = models.resnet18(pretrained=False)
+        self.gmodel= models.resnet34(pretrained=False)
+        self.sdmodel = models.resnet34(pretrained=False)
         #self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
         #                       bias=False)
         #self.layer1 = self._make_layer(block, 64, layers[0])
