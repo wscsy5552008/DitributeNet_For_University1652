@@ -10,10 +10,11 @@ import torch.nn as nn
 import torchvision.models as models
 from Model_block import ResBlock 
 from Model_block import DisBlock 
+from show_data import showMid
 
 device = torch.device("cuda")
 #define ResBlock
-        
+viewMidPic = False
 class DisNet(nn.Module):
     def __init__(self, num_classes = 128,ccuda=False):
         super(DisNet, self).__init__()
@@ -66,8 +67,8 @@ class DisNet(nn.Module):
 class PreTrainDisNet(nn.Module):
     def __init__(self, num_classes = 512,ccuda=False):
         super(PreTrainDisNet, self).__init__()
-        self.gmodel= models.resnet34(pretrained=False)
-        self.sdmodel = models.resnet34(pretrained=False)
+        self.gmodel= models.resnet18(pretrained=False)
+        self.sdmodel = models.resnet18(pretrained=False)
         #self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
         #                       bias=False)
         #self.layer1 = self._make_layer(block, 64, layers[0])
@@ -79,41 +80,79 @@ class PreTrainDisNet(nn.Module):
         #                               dilate=replace_stride_with_dilation[2])
         #self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         #self.fc = nn.Linear(512 * block.expansion, num_classes)
+        
         self.gdislayer =  DisBlock(in_channel=512, num_classes=num_classes,cuda=ccuda)
         self.sddislayer =  DisBlock(in_channel=512, num_classes=num_classes,cuda=ccuda)
     
     def forward_one(self, x):
+        #test
+        if viewMidPic:
+            oripic = x
+        #test
         if self.ground:
-
+            
             out = self.gmodel.conv1(x)
             out = self.gmodel.bn1(out)
             out = self.gmodel.relu(out)
 
+            if viewMidPic:
+                outfolder = "modelPic/ground"
+                beforel1 = out
+            
             out = self.gmodel.layer1(out)
             out = self.gmodel.layer2(out)
+            
+            if viewMidPic:
+                beforel3 = out
+            
             out = self.gmodel.layer3(out)
             out = self.gmodel.layer4(out)
             
+            if viewMidPic:
+                beforedis = out
+            
             out = self.gdislayer(out)
         else:
-
+            
+            
             out = self.sdmodel.conv1(x)
             out = self.sdmodel.bn1(out)
             out = self.sdmodel.relu(out)
+            
+            if viewMidPic:
+                outfolder = "modelPic/satellite"
+                beforel1 = out
 
             out = self.sdmodel.layer1(out)
             out = self.sdmodel.layer2(out)
+            
+            if viewMidPic:
+                beforel3 = out
+            
             out = self.sdmodel.layer3(out)
             out = self.sdmodel.layer4(out)
 
+            if viewMidPic:
+                beforedis = out
+            
             out = self.sddislayer(out)
+            
+        if viewMidPic:
+            showMid(oripic.squeeze(0), outfolder +"/Ori")
+            showMid(beforel1.squeeze(0) ,outfolder +"/l0")
+            showMid(beforel3.squeeze(0), outfolder +"/l2")
+            showMid(beforedis.squeeze(0), outfolder +"/l4")
+        
         return out
          
     def forward(self, x1=None,x2=None,x3=None,x4=None,x5=None,x6=None):
         if x2==None :#only for ground
-            return self.gmodel(x1)
+            self.ground = True
+            y1 = self.forward_one(x1)
+            return y1
         elif x1==None :#only for satelite
-            return self.sdmodel(x2)
+            self.ground = False
+            return self.forward_one(x2)
         elif x3==None:#for ground & satelite
             self.ground = True
             y1 = self.forward_one(x1)

@@ -17,12 +17,37 @@ def pad(inp, pad = 3):
     bg[pad:pad+h, pad:pad+w, :] = inp
     return bg
 
+def showMid(d,path):
+    
+    npad = 3
+    nrow = round(len(d) ** 0.5)
+    white_col = np.ones((24,len(d[0])))*255
+    white_row = np.ones(((len(d[0])+24) * nrow,24))*255
+    
+    for i,who in enumerate(d):
+        img = ToPILImage()(who)
+        if i==0 :
+            result = np.concatenate((img,white_col), axis = 0)
+        elif i % nrow == 0:
+            if i==nrow:
+                whole = result
+                result = np.concatenate((img,white_col), axis = 0)
+            else:
+                whole = np.concatenate((whole,white_row,result), axis = 1)
+                result =  np.concatenate((img,white_col), axis = 0)
+        else:
+            result = np.concatenate((result,white_col,img), axis = 0)
+        
+    if (i-1)%nrow !=0 :
+        result = np.concatenate((result,np.ones((len(whole) - len(result),len(d[0])))*255), axis = 0)
+        whole = np.concatenate((whole,white_row,result), axis = 1)
+    final = Image.fromarray(whole.astype('uint8'))
+    final.save(path + '.jpg')
+    
+    
+    
 def show(d1,d2,d3,d4,path):
     
-    unloader = torchvision.transforms.ToPILImage()
-    count = 0
-    ncol = 20
-    nrow = 25
     npad = 3
     inputs= d1
     inputs2 = d2

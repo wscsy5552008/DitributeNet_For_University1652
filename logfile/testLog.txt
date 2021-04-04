@@ -1,0 +1,912 @@
+Ground picture: 0 
+groundFolder:0000 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0000 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0000 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0000 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0000 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0000 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0000 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0000 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0000 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0000 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 1 
+groundFolder:0000 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0000 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0000 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0000 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0000 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0000 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0000 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0000 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0000 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0000 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 2 
+groundFolder:0000 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0000 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0000 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0000 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0000 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0000 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0000 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0000 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0000 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0000 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 3 
+groundFolder:0000 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0000 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0000 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0000 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0000 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0000 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0000 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0000 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0000 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0000 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 4 
+groundFolder:0001 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0001 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0001 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0001 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0001 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0001 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0001 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0001 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0001 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0001 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 5 
+groundFolder:0001 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0001 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0001 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0001 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0001 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0001 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0001 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0001 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0001 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0001 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 6 
+groundFolder:0001 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0001 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0001 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0001 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0001 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0001 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0001 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0001 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0001 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0001 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 7 
+groundFolder:0001 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0001 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0001 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0001 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0001 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0001 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0001 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0001 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0001 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0001 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 8 
+groundFolder:0002 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0002 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0002 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0002 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0002 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0002 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0002 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0002 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0002 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0002 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 9 
+groundFolder:0002 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0002 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0002 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0002 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0002 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0002 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0002 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0002 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0002 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0002 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 10 
+groundFolder:0002 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0002 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0002 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0002 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0002 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0002 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0002 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0002 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0002 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0002 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 11 
+groundFolder:0002 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0002 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0002 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0002 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0002 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0002 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0002 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0002 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0002 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0002 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 12 
+groundFolder:0003 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0003 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0003 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0003 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0003 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0003 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0003 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0003 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0003 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0003 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 13 
+groundFolder:0003 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0003 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0003 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0003 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0003 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0003 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0003 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0003 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0003 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0003 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 14 
+groundFolder:0003 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0003 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0003 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0003 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0003 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0003 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0003 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0003 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0003 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0003 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 15 
+groundFolder:0003 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0003 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0003 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0003 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0003 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0003 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0003 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0003 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0003 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0003 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 16 
+groundFolder:0004 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0004 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0004 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0004 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0004 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0004 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0004 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0004 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0004 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0004 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 17 
+groundFolder:0004 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0004 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0004 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0004 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0004 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0004 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0004 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0004 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0004 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0004 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 18 
+groundFolder:0004 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0004 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0004 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0004 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0004 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0004 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0004 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0004 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0004 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0004 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 19 
+groundFolder:0004 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0004 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0004 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0004 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0004 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0004 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0004 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0004 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0004 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0004 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 20 
+groundFolder:0005 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0005 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0005 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0005 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0005 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0005 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0005 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0005 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0005 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0005 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 21 
+groundFolder:0006 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0006 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0006 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0006 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0006 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0006 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0006 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0006 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0006 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0006 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 22 
+groundFolder:0006 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0006 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0006 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0006 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0006 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0006 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0006 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0006 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0006 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0006 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 23 
+groundFolder:0006 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0006 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0006 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0006 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0006 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0006 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0006 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0006 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0006 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0006 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 24 
+groundFolder:0007 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0007 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0007 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0007 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0007 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0007 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0007 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0007 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0007 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0007 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 25 
+groundFolder:0007 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0007 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0007 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0007 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0007 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0007 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0007 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0007 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0007 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0007 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 26 
+groundFolder:0007 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0007 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0007 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0007 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0007 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0007 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0007 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0007 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0007 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0007 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 27 
+groundFolder:0008 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0008 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0008 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0008 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0008 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0008 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0008 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0008 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0008 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0008 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 28 
+groundFolder:0008 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0008 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0008 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0008 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0008 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0008 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0008 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0008 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0008 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0008 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 29 
+groundFolder:0008 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0008 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0008 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0008 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0008 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0008 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0008 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0008 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0008 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0008 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 30 
+groundFolder:0009 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0009 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0009 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0009 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0009 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0009 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0009 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0009 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0009 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0009 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 31 
+groundFolder:0009 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0009 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0009 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0009 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0009 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0009 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0009 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0009 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0009 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0009 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 32 
+groundFolder:0010 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0010 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0010 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0010 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0010 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0010 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0010 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0010 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0010 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0010 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 33 
+groundFolder:0010 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0010 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0010 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0010 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0010 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0010 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0010 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0010 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0010 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0010 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 34 
+groundFolder:0010 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0010 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0010 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0010 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0010 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0010 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0010 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0010 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0010 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0010 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 35 
+groundFolder:0010 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0010 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0010 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0010 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0010 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0010 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0010 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0010 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0010 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0010 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 36 
+groundFolder:0010 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0010 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0010 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0010 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0010 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0010 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0010 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0010 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0010 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0010 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 37 
+groundFolder:0011 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0011 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0011 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0011 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0011 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0011 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0011 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0011 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0011 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0011 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 38 
+groundFolder:0011 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0011 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0011 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0011 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0011 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0011 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0011 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0011 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0011 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0011 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 39 
+groundFolder:0011 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0011 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0011 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0011 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0011 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0011 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0011 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0011 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0011 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0011 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 40 
+groundFolder:0011 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0011 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0011 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0011 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0011 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0011 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0011 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0011 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0011 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0011 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 41 
+groundFolder:0012 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0012 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0012 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0012 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0012 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0012 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0012 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0012 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0012 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0012 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 42 
+groundFolder:0012 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0012 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0012 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0012 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0012 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0012 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0012 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0012 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0012 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0012 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 43 
+groundFolder:0012 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0012 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0012 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0012 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0012 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0012 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0012 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0012 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0012 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0012 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 44 
+groundFolder:0013 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0013 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0013 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0013 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0013 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0013 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0013 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0013 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0013 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0013 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 45 
+groundFolder:0013 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0013 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0013 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0013 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0013 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0013 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0013 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0013 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0013 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0013 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 46 
+groundFolder:0013 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0013 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0013 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0013 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0013 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0013 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0013 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0013 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0013 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0013 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 47 
+groundFolder:0013 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0013 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0013 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0013 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0013 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0013 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0013 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0013 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0013 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0013 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 48 
+groundFolder:0014 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0014 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0014 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0014 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0014 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0014 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0014 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0014 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0014 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0014 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 49 
+groundFolder:0014 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0014 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0014 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0014 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0014 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0014 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0014 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0014 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0014 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0014 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 50 
+groundFolder:0014 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0014 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0014 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0014 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0014 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0014 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0014 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0014 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0014 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0014 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 51 
+groundFolder:0014 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0014 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0014 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0014 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0014 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0014 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0014 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0014 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0014 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0014 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 52 
+groundFolder:0014 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0014 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0014 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0014 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0014 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0014 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0014 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0014 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0014 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0014 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 53 
+groundFolder:0015 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0015 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0015 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0015 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0015 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0015 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0015 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0015 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0015 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0015 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 54 
+groundFolder:0015 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0015 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0015 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0015 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0015 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0015 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0015 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0015 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0015 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0015 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 55 
+groundFolder:0015 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0015 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0015 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0015 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0015 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0015 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0015 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0015 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0015 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0015 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 56 
+groundFolder:0015 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0015 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0015 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0015 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0015 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0015 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0015 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0015 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0015 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0015 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 57 
+groundFolder:0016 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0016 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0016 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0016 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0016 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0016 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0016 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0016 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0016 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0016 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 58 
+groundFolder:0016 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0016 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0016 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0016 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0016 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0016 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0016 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0016 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0016 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0016 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 59 
+groundFolder:0016 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0016 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0016 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0016 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0016 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0016 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0016 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0016 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0016 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0016 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 60 
+groundFolder:0017 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0017 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0017 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0017 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0017 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0017 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0017 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0017 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0017 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0017 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 61 
+groundFolder:0017 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0017 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0017 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0017 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0017 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0017 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0017 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0017 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0017 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0017 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 62 
+groundFolder:0017 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0017 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0017 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0017 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0017 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0017 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0017 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0017 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0017 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0017 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 63 
+groundFolder:0018 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0018 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0018 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0018 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0018 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0018 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0018 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0018 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0018 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0018 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 64 
+groundFolder:0018 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0018 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0018 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0018 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0018 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0018 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0018 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0018 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0018 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0018 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 65 
+groundFolder:0018 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0018 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0018 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0018 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0018 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0018 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0018 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0018 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0018 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0018 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 66 
+groundFolder:0018 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0018 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0018 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0018 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0018 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0018 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0018 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0018 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0018 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0018 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 67 
+groundFolder:0018 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0018 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0018 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0018 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0018 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0018 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0018 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0018 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0018 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0018 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 68 
+groundFolder:0018 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0018 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0018 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0018 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0018 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0018 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0018 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0018 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0018 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0018 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 69 
+groundFolder:0019 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0019 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0019 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0019 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0019 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0019 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0019 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0019 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0019 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0019 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 70 
+groundFolder:0019 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0019 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0019 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0019 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0019 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0019 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0019 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0019 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0019 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0019 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 71 
+groundFolder:0019 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0019 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0019 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0019 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0019 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0019 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0019 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0019 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0019 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0019 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 72 
+groundFolder:0019 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0019 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0019 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0019 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0019 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0019 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0019 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0019 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0019 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0019 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 73 
+groundFolder:0019 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0019 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0019 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0019 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0019 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0019 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0019 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0019 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0019 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0019 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 74 
+groundFolder:0020 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0020 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0020 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0020 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0020 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0020 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0020 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0020 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0020 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0020 |TargetFolde:0004 | Loss:0.078735
+--------------------
+Ground picture: 75 
+groundFolder:0020 |TargetFolde:0027 | Loss:0.043986
+groundFolder:0020 |TargetFolde:0006 | Loss:0.046002
+groundFolder:0020 |TargetFolde:0010 | Loss:0.049946
+groundFolder:0020 |TargetFolde:0059 | Loss:0.063223
+groundFolder:0020 |TargetFolde:0066 | Loss:0.066190
+groundFolder:0020 |TargetFolde:0068 | Loss:0.070619
+groundFolder:0020 |TargetFolde:0046 | Loss:0.077346
+groundFolder:0020 |TargetFolde:0043 | Loss:0.077623
+groundFolder:0020 |TargetFolde:0084 | Loss:0.077826
+groundFolder:0020 |TargetFolde:0004 | Loss:0.078735
+--------------------

@@ -122,7 +122,8 @@ y_loss['val'] = []
 y_err = {}
 y_err['train'] = []
 y_err['val'] = []
-
+groundFeaturePath = "train_log/groundFeature.txt"
+gr = open(groundFeaturePath,'w')
 def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_epochs=25):
     since = time.time()
 
@@ -165,10 +166,21 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
                 unsertainty_loss =  Variable(unsertainty_loss.cuda().detach())
                 
             
+            print('[epoch:%d, iter:%d/%d]' 
+                  % (epoch + 1, index, len(train_loader)) ,file=gr)
+            print(result[0],file=gr)
+            print(result[3],file=gr)
+            
+            print('[epoch:%d, iter:%d/%d]:GroundFeature' 
+                  % (epoch + 1, index, len(train_loader)))
+            print(result[0])
+            print(result[3])
+            print('-'*20)
             for i in range(3):
                 for j in range(3):
                     if i==j:
                         continue
+                    
                     anchor = result[i]
                     positive = result[j]
                     negative = result[j+3]
