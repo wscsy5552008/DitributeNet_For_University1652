@@ -57,7 +57,7 @@ parser.add_argument('--erasing_p', default=0, type=float, help='Random Erasing p
 parser.add_argument('--use_dense', action='store_true', help='use densenet121' )
 parser.add_argument('--use_NAS', action='store_true', help='use NAS' )
 parser.add_argument('--warm_epoch', default=0, type=int, help='the first K epoch that needs warm up')
-parser.add_argument('--lr', default=0.003, type=float, help='learning rate')
+parser.add_argument('--lr', default=0.00001, type=float, help='learning rate')
 parser.add_argument('--moving_avg', default=1.0, type=float, help='moving average')
 parser.add_argument('--droprate', default=0.5, type=float, help='drop rate')
 parser.add_argument('--DA', action='store_true', help='use Color Data Augmentation' )
@@ -94,7 +94,9 @@ if len(gpu_ids)>0:
 
 
     
-trainImgSet = torch.load('dataTemp/Datasets100')#getdatasets()
+#trainImgSet = torch.load('dataTemp/Datasets100')#getdatasets()
+ 
+trainImgSet = getdatasets()
 
 train_loader = DataLoader(dataset=trainImgSet,batch_size=opt.batch_size ,shuffle=False)
 
@@ -111,7 +113,7 @@ train_loader = DataLoader(dataset=trainImgSet,batch_size=opt.batch_size ,shuffle
 # In the following, parameter ``scheduler`` is an LR scheduler object from
 # ``torch.optim.lr_scheduler``.
 device = torch.device("cpu")
-use_gpu = True
+use_gpu = False
 if use_gpu:
     device = torch.device("cuda")
     use_gpu = torch.cuda.is_available()
@@ -125,7 +127,7 @@ y_err['val'] = []
 
 def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_epochs=25):
     since = time.time()
-
+    
     #best_model_wts = model.state_dict()
     #best_acc = 0.0
     #warm_up = 0.1 # We start from the 0.1*lrRate
@@ -156,27 +158,54 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             result = model(g1,d1,s1,g2,d2,s2)
                   
             feature_loss = 0.0
+            gr1,dr1,sr1,gr2,dr2,sr2 = result
             
-            for i in range(2):
-                for j in range(i+1,3):
-                    anchor = result[i]
-                    positive = result[j]
-                    negative = result[j+3]
+            #1 ground and satellite
+            #feature_loss_gs1 =  FeaturesLossWithoutSample(
+            #            manchor=gr1,
+            #            mpositive=sr1,
+            #            mnegative=sr2)
+            
+            #1 drone and satellite
+            feature_loss_ds1 =  FeaturesLossWithoutSample(
+                        manchor=dr1,
+                        mpositive=sr1,
+                        mnegative=sr2)
+            #2 ground and satellite
+            #feature_loss_gs2 =  FeaturesLossWithoutSample(
+            #            manchor=gr2,
+            #            mpositive=sr2,
+            #            mnegative=sr1)
+            
+            #2 drone and satellite
+            feature_loss_ds2 =  FeaturesLossWithoutSample(
+                        manchor=dr2,
+                        mpositive=sr2,
+                        mnegative=sr1)
+            
+            #feature_loss = feature_loss_gs1 + feature_loss_gs2 + 
+            feature_loss = feature_loss_ds1 + feature_loss_ds2
+                
+            #for i in range(2):
+            #    for j in range(i+1,3):
+            #        anchor = result[i]
+            #        positive = result[j]
+            #        negative = result[j+3]
                     #out = (长度为numclasss的均值向量，方差向量，【N*samples向量】) 
-                    feature_loss1 = FeaturesLossWithoutSample(
-                        manchor=anchor,
-                        mpositive=positive,
-                        mnegative=negative)
+            #        feature_loss1 = FeaturesLossWithoutSample(
+            #            manchor=anchor,
+            #            mpositive=positive,
+            #            mnegative=negative)
                     
-                    anchor = result[i+3]
-                    positive = result[j+3]
-                    negative = result[j]
-                    feature_loss2 = FeaturesLossWithoutSample(
-                        manchor=anchor,
-                        mpositive=positive,
-                        mnegative=negative)
+            #        anchor = result[i+3]
+            #        positive = result[j+3]
+            #        negative = result[j]
+            #        feature_loss2 = FeaturesLossWithoutSample(
+            #            manchor=anchor,
+            #            mpositive=positive,
+            #            mnegative=negative)
                     
-                    feature_loss += feature_loss1 + feature_loss2
+             #       feature_loss += feature_loss1 + feature_loss2
             
             optimizer.zero_grad()
             feature_loss.backward()
@@ -199,7 +228,6 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
     return model
 
 model = resNet().to(device)
-
 
 if start_epoch>=40:
     opt.lr = opt.lr*0.1

@@ -51,13 +51,13 @@ parser.add_argument('--pad', default=10, type=int, help='padding')
 parser.add_argument('--h', default=384, type=int, help='height')
 parser.add_argument('--w', default=384, type=int, help='width')
 parser.add_argument('--views', default=3, type=int, help='the number of views')
-parser.add_argument('--loss_lamda', default=16, type=int, help='Ditribute_Loss Lamda' )
-parser.add_argument('--loss_k',  default=0.5, type=int, help='frature_loss K' )
+parser.add_argument('--loss_lamda', default=4, type=int, help='Ditribute_Loss Lamda' )
+parser.add_argument('--loss_k',  default=0.2, type=int, help='feature_loss K' )
 parser.add_argument('--erasing_p', default=0, type=float, help='Random Erasing probability, in [0,1]')
 parser.add_argument('--use_dense', action='store_true', help='use densenet121' )
 parser.add_argument('--use_NAS', action='store_true', help='use NAS' )
 parser.add_argument('--warm_epoch', default=0, type=int, help='the first K epoch that needs warm up')
-parser.add_argument('--lr', default=0.003, type=float, help='learning rate')
+parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
 parser.add_argument('--moving_avg', default=1.0, type=float, help='moving average')
 parser.add_argument('--droprate', default=0.5, type=float, help='drop rate')
 parser.add_argument('--DA', action='store_true', help='use Color Data Augmentation' )
@@ -163,7 +163,7 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             unsertainty_loss =  torch.zeros(size=(1,1),dtype = float) 
             if use_gpu:
                 feature_loss =  Variable(feature_loss.cuda().detach())
-                unsertainty_loss =  Variable(unsertainty_loss.cuda().detach())
+                uncertainty_loss =  Variable(unsertainty_loss.cuda().detach())
                 
             
             print('[epoch:%d, iter:%d/%d]' 
@@ -171,58 +171,95 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             print(result[0],file=gr)
             print(result[3],file=gr)
             
-            print('[epoch:%d, iter:%d/%d]:GroundFeature' 
-                  % (epoch + 1, index, len(train_loader)))
-            print(result[0])
-            print(result[3])
-            print('-'*20)
-            for i in range(3):
-                for j in range(3):
-                    if i==j:
-                        continue
-                    
-                    anchor = result[i]
-                    positive = result[j]
-                    negative = result[j+3]
-                    #out = (长度为numclasss的均值向量，方差向量，【N*samples向量】) 
-                    feature_loss1 = FeaturesLoss(
-                        manchor=anchor[0],sanchor=anchor[2],
-                        mpositive=positive[0],spositvie=positive[2],
-                        mnegative=negative[0],K=opt.loss_k)
-                    
-                    unsertainty_loss1 = UncertaintyLoss(disanchor=anchor[1])
-                    
-                    anchor = result[i+3]
-                    positive = result[j+3]
-                    negative = result[j]
-                    feature_loss2 = FeaturesLoss(
-                        manchor=anchor[0],sanchor=anchor[2],
-                        mpositive=positive[0],spositvie=positive[2],
-                        mnegative=negative[0],K=opt.loss_k)
-                    
-                    unsertainty_loss2 = UncertaintyLoss(disanchor=anchor[1])
-                    
-                    feature_loss = feature_loss + feature_loss1 + feature_loss2
-                    unsertainty_loss = unsertainty_loss + unsertainty_loss1 + unsertainty_loss2            
+            #print('[epoch:%d, iter:%d/%d]:GroundFeature' 
+            #      % (epoch + 1, index, len(train_loader)))
+            #print(result[0])
+            #print(result[3])
+            #print('-'*20)
+            gr1,dr1,sr1,gr2,dr2,sr2 = result
+            
+            #1 ground and satellite
+            feature_loss_gs1 =  FeaturesLoss(
+                        manchor=gr1[0],sanchor=gr1[2],
+                        mpositive=sr1[0],spositvie=sr1[2],
+                        mnegative=sr2[0],K=opt.loss_k)
+            feature_loss_gs1.backward(retain_graph=True)
+            
+            #1 drone and satellite
+            feature_loss_ds1 =  FeaturesLoss(
+                        manchor=dr1[0],sanchor=dr1[2],
+                        mpositive=sr1[0],spositvie=sr1[2],
+                        mnegative=sr2[0],K=opt.loss_k)
+            feature_loss_ds1.backward(retain_graph=True)
+            
+            #2 ground and satellite
+            feature_loss_gs2 =  FeaturesLoss(
+                        manchor=gr2[0],sanchor=gr2[2],
+                        mpositive=sr2[0],spositvie=sr2[2],
+                        mnegative=sr1[0],K=opt.loss_k)
+            feature_loss_gs2.backward(retain_graph=True)
+            
+            #2 drone and satellite
+            feature_loss_ds2 =  FeaturesLoss(
+                        manchor=dr2[0],sanchor=dr2[2],
+                        mpositive=sr2[0],spositvie=sr2[2],
+                        mnegative=sr1[0],K=opt.loss_k)
+            feature_loss_ds2.backward(retain_graph=True)
+            
+            feature_loss = feature_loss_gs1 + feature_loss_gs2 + feature_loss_ds1 + feature_loss_ds2
+            uncertainty_loss = 0.0
+            for item in result:
+                uncertainty_loss = uncertainty_loss +  UncertaintyLoss(disanchor=item[1])
+           
+            #for i in range(3):
+            #    for j in range(3):
+            #        if i==j:
+            #            continue
+            #        
+            #        anchor = result[i]
+            #        positive = result[j]
+            #        negative = result[j+3]
+            #        #out = (长度为numclasss的均值向量，方差向量，【N*samples向量】) 
+            #        feature_loss1 = FeaturesLoss(
+            #            manchor=anchor[0],sanchor=anchor[2],
+            #            mpositive=positive[0],spositvie=positive[2],
+            #            mnegative=negative[0],K=opt.loss_k)
+            #        
+            #        unsertainty_loss1 = UncertaintyLoss(disanchor=anchor[1])
+            #        
+            #        anchor = result[i+3]
+            #        positive = result[j+3]
+            #        negative = result[j]
+            #        feature_loss2 = FeaturesLoss(
+            #            manchor=anchor[0],sanchor=anchor[2],
+            #            mpositive=positive[0],spositvie=positive[2],
+            #            mnegative=negative[0],K=opt.loss_k)
+            #        
+            #        unsertainty_loss2 = UncertaintyLoss(disanchor=anchor[1])
+            #        
+            #        feature_loss = feature_loss + feature_loss1 + feature_loss2
+            #        unsertainty_loss = unsertainty_loss + unsertainty_loss1 + unsertainty_loss2            
            
             
                    
             optimizer.zero_grad()
     
-            if unsertainty_loss < opt.loss_lamda :
-                runsertainty_loss = opt.loss_lamda - unsertainty_loss;
-                runsertainty_loss.backward(retain_graph=True)
-            feature_loss.backward()
+            if uncertainty_loss < opt.loss_lamda :
+                runcertainty_loss = opt.loss_lamda - uncertainty_loss;
+                runcertainty_loss.backward(retain_graph=True)
+            #feature_loss.backward()
                 
             optimizer.step()
                 
             
             print('[epoch:%d, iter:%d/%d] feature_loss: %.05f | real_unsertainty-Loss: %.05f ' 
-                          % (epoch + 1, index, len(train_loader) ,feature_loss,unsertainty_loss ))
+                          % (epoch + 1, index, len(train_loader) ,feature_loss,uncertainty_loss ))
             print('[epoch:%d, iter:%d/%d] feature_loss: %.05f | real_unsertainty-Loss: %.05f ' 
-                          % (epoch + 1, index, len(train_loader) ,feature_loss,unsertainty_loss ),file=logfile)
-
-
+                          % (epoch + 1, index, len(train_loader) ,feature_loss,uncertainty_loss ),file=logfile)
+       #     if feature_loss > 150:
+       #         break
+       # if feature_loss > 150:
+       #     break
         save_network(model, opt.name, epoch)
         logfile.close()
         

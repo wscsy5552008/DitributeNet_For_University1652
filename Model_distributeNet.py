@@ -65,10 +65,10 @@ class DisNet(nn.Module):
             return y1,y2,y3,y4,y5,y6
         
 class PreTrainDisNet(nn.Module):
-    def __init__(self, num_classes = 512,ccuda=False):
+    def __init__(self, num_classes = 64,ccuda=False):
         super(PreTrainDisNet, self).__init__()
-        self.gmodel= models.resnet18(pretrained=False)
-        self.sdmodel = models.resnet18(pretrained=False)
+        self.gmodel= models.resnet18(pretrained=True)
+        self.sdmodel = models.resnet18(pretrained=True)
         #self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
         #                       bias=False)
         #self.layer1 = self._make_layer(block, 64, layers[0])
@@ -138,10 +138,10 @@ class PreTrainDisNet(nn.Module):
             out = self.sddislayer(out)
             
         if viewMidPic:
-            showMid(oripic.squeeze(0), outfolder +"/Ori")
-            showMid(beforel1.squeeze(0) ,outfolder +"/l0")
-            showMid(beforel3.squeeze(0), outfolder +"/l2")
-            showMid(beforedis.squeeze(0), outfolder +"/l4")
+            showMid(oripic[0], outfolder +"/Ori")
+            showMid(beforel1[0] ,outfolder +"/l0")
+            showMid(beforel3[0], outfolder +"/l2")
+            showMid(beforedis[0], outfolder +"/l4")
         
         return out
          

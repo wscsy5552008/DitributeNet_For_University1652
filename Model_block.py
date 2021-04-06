@@ -40,15 +40,22 @@ class ResBlock(nn.Module):
 
 
 class DisBlock(nn.Module):
-    def __init__(self, in_channel = 256, out_channel = 512, stride = 1,num_classes = 64,cuda=False):
+    def __init__(self, in_channel = 256, out_channel = 512, stride = 1,num_classes = 128,cuda=False):
         self.cuda = cuda
         super(DisBlock, self).__init__()
         self.inchannel = in_channel
         self.num_classes = num_classes
         self.avgLayer = self.make_layer(ResBlock, channels = out_channel, num_blocks = 2, stride=2)
+        self.avg_poolLayer = nn.AvgPool2d(4,stride = 1)
+        self.avg_relu = nn.ReLU()
+        
         self.disLayer = self.make_layer(ResBlock, channels = out_channel, num_blocks = 2, stride=2)
         self.afc = nn.Linear(out_channel*9, num_classes)
         self.dfc = nn.Linear(out_channel*9, num_classes)
+        self.dis_poolLayer = nn.AvgPool2d(4,stride = 1)
+        self.relu = nn.ReLU()
+        #self.softmax = nn.Softmax(dim=0)
+        
     
     def make_layer(self, block, channels, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)
@@ -62,25 +69,30 @@ class DisBlock(nn.Module):
     def forward(self, x):
         
         avg = self.avgLayer(x)
-        avg = F.avg_pool2d(avg,4) 
+        avg = self.avg_poolLayer(x)
         avg = torch.flatten(avg, 1)
         avg = self.afc(avg)
         
         
         #avg = avg.view(avg.size(0),-1)
         #avg = self.fc(avg)
-        avg = F.relu(avg).reshape(-1,self.num_classes)
+        avg = self.relu(avg)
+        avg = avg.reshape(-1,self.num_classes)
         
         disx = Variable(x.detach())
         dis = self.disLayer(disx)
-        dis = F.avg_pool2d(dis,4)    
+        dis = self.dis_poolLayer(dis)
         
         dis = torch.flatten(dis, 1)
         dis = self.dfc(dis)
         
         #dis = dis.view(dis.size(0),-1)
         #dis = self.fc(dis)
-        dis = F.relu(dis).reshape(-1,self.num_classes)
+        dis = self.relu(dis)
+        dis = dis.reshape(-1,self.num_classes)
+        #dis yao softmax
+        #dis = self.softmax(dis)
+        
         return avg,dis,self.getSamples(avg,dis)
         
     #ResNet    
@@ -92,8 +104,9 @@ class DisBlock(nn.Module):
     #disNet:Now out = (512副均值图像，512副方差图像，【N*512副samples图像】) / -> 改成 长度为numclasss的向量 
     #           out = (长度为numclasss的均值向量，方差向量，【N*samples向量】) / -> 改成 长度为numclasss的向量 
         
-    def getSamples(self,avg,dis,size = 10):
+    def getSamples(self,avgOri,dis,size = 10):
         samples = []
+        avg = Variable(avgOri.detach())
         for i in range(size):
             #sample from N(1,0)
             torchSize = tuple(avg.size())

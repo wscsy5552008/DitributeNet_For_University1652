@@ -76,6 +76,7 @@ def gettestdatasets(model,path,view):
                 
             label.append(folder_name)
             datasets.append(result.squeeze(0).numpy())
+            
     return np.array(label),np.array(datasets)
             
 def getdatasets():
@@ -91,7 +92,7 @@ def getdatasets():
             anfolder_name = folder_name
             anfolder_root = target_drone + '/' + anfolder_name
             continue
-        if fi >=100:
+        if fi >=200:
             break
         print('………………reading………………:%d/%d'%(fi,len(os.listdir(target_drone))))
         
@@ -115,10 +116,8 @@ def getdatasets():
         anglen = len(angrolist)
         
         andronelist =  os.listdir(anfolder_root)
-        for i,img_name in enumerate(os.listdir(folder_root),0):
-            #间隔读取
-            if i % 3 !=0:
-                continue
+        for i in [1,37,54]:
+            img_name = os.listdir(folder_root)[i]
             
             #读取drone图片
             drone_view = Image.open(folder_root + '/' + img_name)          
