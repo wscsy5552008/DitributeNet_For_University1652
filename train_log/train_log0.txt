@@ -1,0 +1,7 @@
+----------
+[epoch:1, iter:0/20] feature_loss DS: 48.32622 | feature_loss GD: 49.48170 | unsertainty-Loss: 48.65658 
+[epoch:1, iter:1/20] feature_loss DS: 43.45141 | feature_loss GD: 44.80271 | unsertainty-Loss: 49.89484 
+[epoch:1, iter:2/20] feature_loss DS: 43.19072 | feature_loss GD: 43.46493 | unsertainty-Loss: 50.18704 
+[epoch:1, iter:3/20] feature_loss DS: 43.13547 | feature_loss GD: 43.58538 | unsertainty-Loss: 50.22377 
+[epoch:1, iter:4/20] feature_loss DS: 43.10015 | feature_loss GD: 43.19036 | unsertainty-Loss: 50.26869 
+[epoch:1, iter:5/20] feature_loss DS: 43.03581 | feature_loss GD: 43.06774 | unsertainty-Loss: 50.27451 

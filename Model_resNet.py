@@ -61,10 +61,10 @@ class ResNet(nn.Module):
             return y1,y2,y3,y4,y5,y6
         
 class PreTrainResNet(nn.Module):
-    def __init__(self, num_classes = 128):
+    def __init__(self, num_classes = 1000):
         super(PreTrainResNet, self).__init__()
-        self.gmodel= models.resnet50(pretrained=True)
-        self.sdmodel= models.resnet50(pretrained=True)
+        self.gmodel= models.resnet18(pretrained=True)
+        self.sdmodel= models.resnet18(pretrained=False)
         #self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
         #                       bias=False)
         #self.layer1 = self._make_layer(block, 64, layers[0])

@@ -40,21 +40,21 @@ class ResBlock(nn.Module):
 
 
 class DisBlock(nn.Module):
-    def __init__(self, in_channel = 256, out_channel = 512, stride = 1,num_classes = 128,cuda=False):
+    def __init__(self, in_channel = 256, out_channel = 512, stride = 1,num_classes = 1000,cuda=False):
         self.cuda = cuda
         super(DisBlock, self).__init__()
         self.inchannel = in_channel
         self.num_classes = num_classes
         self.avgLayer = self.make_layer(ResBlock, channels = out_channel, num_blocks = 2, stride=2)
-        self.avg_poolLayer = nn.AvgPool2d(4,stride = 1)
+        self.avg_poolLayer = nn.AvgPool2d(4)
         self.avg_relu = nn.ReLU()
         
         self.disLayer = self.make_layer(ResBlock, channels = out_channel, num_blocks = 2, stride=2)
         self.afc = nn.Linear(out_channel*9, num_classes)
         self.dfc = nn.Linear(out_channel*9, num_classes)
-        self.dis_poolLayer = nn.AvgPool2d(4,stride = 1)
+        self.dis_poolLayer = nn.AvgPool2d(4)
         self.relu = nn.ReLU()
-        #self.softmax = nn.Softmax(dim=0)
+        self.softmax = nn.Softmax(dim=0)
         
     
     def make_layer(self, block, channels, num_blocks, stride):
@@ -69,7 +69,7 @@ class DisBlock(nn.Module):
     def forward(self, x):
         
         avg = self.avgLayer(x)
-        avg = self.avg_poolLayer(x)
+        avg = self.avg_poolLayer(avg)
         avg = torch.flatten(avg, 1)
         avg = self.afc(avg)
         
@@ -78,6 +78,7 @@ class DisBlock(nn.Module):
         #avg = self.fc(avg)
         avg = self.relu(avg)
         avg = avg.reshape(-1,self.num_classes)
+        #avg = self.softmax(avg)
         
         disx = Variable(x.detach())
         dis = self.disLayer(disx)
@@ -91,7 +92,7 @@ class DisBlock(nn.Module):
         dis = self.relu(dis)
         dis = dis.reshape(-1,self.num_classes)
         #dis yao softmax
-        #dis = self.softmax(dis)
+        # dis = dis + torch.ones(dis.size())
         
         return avg,dis,self.getSamples(avg,dis)
         

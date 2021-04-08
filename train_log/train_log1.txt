@@ -1,1 +1,21 @@
 ----------
+[epoch:2, iter:0/20] feature_loss DS:  1.05599 | feature_loss GD:  1.72822 | unsertainty-Loss: 19260.10158 
+[epoch:2, iter:1/20] feature_loss DS:  1.01178 | feature_loss GD:  1.72048 | unsertainty-Loss: 18839.65939 
+[epoch:2, iter:2/20] feature_loss DS:  0.31181 | feature_loss GD:  1.71958 | unsertainty-Loss: 19088.50970 
+[epoch:2, iter:3/20] feature_loss DS:  1.01627 | feature_loss GD:  1.70870 | unsertainty-Loss: 19208.14478 
+[epoch:2, iter:4/20] feature_loss DS:  1.70992 | feature_loss GD:  1.74526 | unsertainty-Loss: 19245.81494 
+[epoch:2, iter:5/20] feature_loss DS:  0.30680 | feature_loss GD:  1.73613 | unsertainty-Loss: 18961.11910 
+[epoch:2, iter:6/20] feature_loss DS:  1.72305 | feature_loss GD:  1.71214 | unsertainty-Loss: 19167.33916 
+[epoch:2, iter:7/20] feature_loss DS:  0.30682 | feature_loss GD:  1.01482 | unsertainty-Loss: 19290.69160 
+[epoch:2, iter:8/20] feature_loss DS:  0.30292 | feature_loss GD:  1.71178 | unsertainty-Loss: 19193.79829 
+[epoch:2, iter:9/20] feature_loss DS:  1.70957 | feature_loss GD:  1.74266 | unsertainty-Loss: 19126.73456 
+[epoch:2, iter:10/20] feature_loss DS:  1.00814 | feature_loss GD:  1.71005 | unsertainty-Loss: 18921.96728 
+[epoch:2, iter:11/20] feature_loss DS:  1.68831 | feature_loss GD:  1.75511 | unsertainty-Loss: 19494.73291 
+[epoch:2, iter:12/20] feature_loss DS:  0.99914 | feature_loss GD:  1.71090 | unsertainty-Loss: 19310.82233 
+[epoch:2, iter:13/20] feature_loss DS:  1.00147 | feature_loss GD:  1.72108 | unsertainty-Loss: 19535.46778 
+[epoch:2, iter:14/20] feature_loss DS:  1.69578 | feature_loss GD:  1.71680 | unsertainty-Loss: 19455.22791 
+[epoch:2, iter:15/20] feature_loss DS:  0.29458 | feature_loss GD:  1.72949 | unsertainty-Loss: 19424.78899 
+[epoch:2, iter:16/20] feature_loss DS:  0.29278 | feature_loss GD:  1.69927 | unsertainty-Loss: 19623.32530 
+[epoch:2, iter:17/20] feature_loss DS:  0.99125 | feature_loss GD:  1.72952 | unsertainty-Loss: 19730.44162 
+[epoch:2, iter:18/20] feature_loss DS:  1.00134 | feature_loss GD:  1.69873 | unsertainty-Loss: 19873.42458 
+[epoch:2, iter:19/20] feature_loss DS:  1.70919 | feature_loss GD:  1.71817 | unsertainty-Loss: 20041.13803 

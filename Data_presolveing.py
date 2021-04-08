@@ -10,6 +10,7 @@ import os
 import numpy as np
 from PIL import Image
 from torchvision import transforms
+import random
 import show_data
 target_drone = '../data/train/drone'
 target_ground = '../data/train/street'
@@ -31,6 +32,10 @@ def getsatedatasets(model):
     
 def getgrounddatasets(model):
     return gettestdatasets(model,target_test_ground,'ground')
+
+def getdronedatasets(model):
+    return gettestdatasets(model,target_test_satellite,'drone')
+    
     
 def gettestdatasets(model,path,view):
     transform1 = transforms.Compose([
@@ -41,41 +46,44 @@ def gettestdatasets(model,path,view):
     datasets = []
     label = []
     total = len(os.listdir(path))
-    for fi,folder_name in enumerate(os.listdir(path),0):
+    foldeList =os.listdir(path)
+    random.shuffle(foldeList)
+    for fi,folder_name in enumerate(foldeList,0):
         print("processing: %d/%d"%(fi,total))
-        if view == 'satellite' and fi >100:
+        if fi >100:
             break
-        if view == 'ground' and fi >20:
-            break
+      
+        
         folder_root = path + '/' + folder_name
         if not os.path.isdir(folder_root):
             continue
-        for img_name in os.listdir(folder_root):
-            img_path = folder_root + '/' + img_name
-            #读取图片
-            sate_view = Image.open(img_path)          
-            sate_view = sate_view.convert('RGB')
-            sate_tensor = transform1(sate_view)
+        #for img_name in os.listdir(folder_root):
+        img_name = os.listdir(folder_root)[0]    
+        img_path = folder_root + '/' + img_name
+        #读取图片
+        sate_view = Image.open(img_path)          
+        sate_view = sate_view.convert('RGB')
+        sate_tensor = transform1(sate_view)
+        
+        with torch.no_grad():
+            if view=='ground':
+                result = model(x1 = sate_tensor.unsqueeze(0))
+            else:
+                result = model(x3 = sate_tensor.unsqueeze(0))
+                
+        if isinstance(model, DisNet):
+            # result:  avg,dis,self.getSamples(avg,dis)
+            # treat dis as a possibility?
             
-            with torch.no_grad():
-                if view=='satellite':
-                    result = model(x2 = sate_tensor.unsqueeze(0))
-                else:
-                    result = model(x1 = sate_tensor.unsqueeze(0))
-                    
-            if isinstance(model, DisNet):
-                # result:  avg,dis,self.getSamples(avg,dis)
-                # treat dis as a possibility?
-                
-                # or cal to a new one
-                samples = result[2]
-                tmp = result[0]
-                for i,item in enumerate(samples,0):
-                    tmp+=item
-                result = tmp/i
-                
-            label.append(folder_name)
-            datasets.append(result.squeeze(0).numpy())
+            # or cal to a new one
+            #samples = result[2]
+            #tmp = result[0]
+            #for i,item in enumerate(samples,0):
+            #    tmp+=item
+            #result = tmp/i
+            result = result[0]
+        label.append(folder_name)
+        datasets.append(result.squeeze(0).numpy())
             
     return np.array(label),np.array(datasets)
             
@@ -87,14 +95,19 @@ def getdatasets():
         )
     
     datasets = []
-    for fi,folder_name in enumerate(os.listdir(target_drone),0):
+    
+    foldeList =os.listdir(target_drone)
+    random.shuffle(foldeList)
+    for fi,folder_name in enumerate(foldeList,0):
+        if fi% 10 == 0 :
+            print('………………reading………………:%d/%d'%(fi,len(os.listdir(target_drone))))
+            
         if fi % 2 == 0:
             anfolder_name = folder_name
             anfolder_root = target_drone + '/' + anfolder_name
             continue
-        if fi >=200:
+        if fi >=120:
             break
-        print('………………reading………………:%d/%d'%(fi,len(os.listdir(target_drone))))
         
         folder_root = target_drone + '/' + folder_name
         if not os.path.isdir(folder_root):
@@ -116,7 +129,7 @@ def getdatasets():
         anglen = len(angrolist)
         
         andronelist =  os.listdir(anfolder_root)
-        for i in [1,37,54]:
+        for i in [53]:
             img_name = os.listdir(folder_root)[i]
             
             #读取drone图片

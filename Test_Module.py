@@ -10,9 +10,9 @@ from Model_distributeNet import PreTrainDisNet as DisNet
 import numpy as np
 import faiss
 import torch
-from Data_presolveing import getsatedatasets, getgrounddatasets
+from Data_presolveing import getsatedatasets, getgrounddatasets, getdronedatasets
 version =  torch.__version__
-MODELPATH = "model/tri_view/net_000.pth"
+MODELPATH = "model/tri_view/net_009.pth"
 load = False
 def test(model):
     if load == False:
@@ -20,9 +20,9 @@ def test(model):
         print("-"*10)
         slabelsets, svectorsets = getsatedatasets(model)
         
-        print("get ground database")
+        print("get drone database")
         print("-"*10)
-        glabelsets, gvectorsets = getgrounddatasets(model)
+        glabelsets, gvectorsets = getdronedatasets(model)
         
         satesets = np.array(svectorsets)
         slabelsets =  np.array(slabelsets)
@@ -50,7 +50,6 @@ def test(model):
         slabelsets = torch.load("database/sLabelSets.rs")
         
         
-    total = len(I)  
     top_three = 0
     top_one = 0
     top_five = 0
@@ -78,7 +77,8 @@ def test(model):
                 top_ten+=1
        
         print('-'*20,file=test_logfile)
-    print('topOne%f  |  topThree%f  |  topFive%f  |  topTen%f  '%(top_one/total,top_three/total,top_five/total,top_ten/total))
+    total = i+1  
+    print('total: %d | topOne%f  |  topThree%f  |  topFive%f  |  topTen%f  '%(total,top_one/total,top_three/total,top_five/total,top_ten/total))
             
 
 if __name__ == '__main__':

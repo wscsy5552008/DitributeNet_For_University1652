@@ -65,10 +65,11 @@ class DisNet(nn.Module):
             return y1,y2,y3,y4,y5,y6
         
 class PreTrainDisNet(nn.Module):
-    def __init__(self, num_classes = 64,ccuda=False):
+    def __init__(self, num_classes = 1024,ccuda=False):
         super(PreTrainDisNet, self).__init__()
-        self.gmodel= models.resnet18(pretrained=True)
-        self.sdmodel = models.resnet18(pretrained=True)
+        self.gmodel= models.resnet18(pretrained=False)
+        self.sdmodel = self.gmodel
+        #models.resnet18(pretrained=False)
         #self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
         #                       bias=False)
         #self.layer1 = self._make_layer(block, 64, layers[0])
@@ -146,20 +147,27 @@ class PreTrainDisNet(nn.Module):
         return out
          
     def forward(self, x1=None,x2=None,x3=None,x4=None,x5=None,x6=None):
-        if x2==None :#only for ground
+        if x2==None and x3==None:#only for ground
             self.ground = True
             y1 = self.forward_one(x1)
             return y1
-        elif x1==None :#only for satelite
+        elif x1==None and x2==None :#only for satelite
             self.ground = False
-            return self.forward_one(x2)
+            return self.forward_one(x3)
         elif x3==None:#for ground & satelite
             self.ground = True
             y1 = self.forward_one(x1)
             self.ground = False
             y2 = self.forward_one(x2)
             return y1,y2
-        else:#for all
+        elif x1 == None:#for drone and satellite
+            self.ground = False
+            y2 = self.forward_one(x2)
+            y3 = self.forward_one(x3)
+            y5 = self.forward_one(x5)
+            y6 = self.forward_one(x6)
+            return y2,y3,y5,y6   
+        else:#for al
             self.ground = True
             y1 = self.forward_one(x1)
             y4 = self.forward_one(x4)

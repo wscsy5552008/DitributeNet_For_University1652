@@ -32,6 +32,7 @@ try:
 except ImportError: # will be 3.x series
     print('This is not an error. If you want to use low precision, i.e., fp16, please install the apex with cuda support (https://github.com/NVIDIA/apex) and update pytorch to 1.0')
 
+MODELPATH = "model/tri_view/net_001.pth"
 import math
 from Model_distributeNet import PreTrainDisNet as disNet
 from LossFunc_lossCalc import FeaturesLoss,TripletUncertaintyLoss
@@ -40,12 +41,12 @@ from LossFunc_lossCalc import FeaturesLoss,TripletUncertaintyLoss
 # --------
 parser = argparse.ArgumentParser(description='Training')
 parser.add_argument('--gpu_ids',default='0', type=str,help='gpu_ids: e.g. 0  0,1,2  0,2')
-parser.add_argument('--name',default='tri_view', type=str, help='output model name')
+parser.add_argument('--name',default='disNet', type=str, help='output model name')
 parser.add_argument('--pool',default='avg', type=str, help='pool avg')
 parser.add_argument('--data_dir',default='./data/train',type=str, help='training dir path')
 parser.add_argument('--train_all', action='store_true', help='use all training data' )
 parser.add_argument('--color_jitter', action='store_true', help='use color jitter in training' )
-parser.add_argument('--batch_size', default=2, type=int, help='batchsize')
+parser.add_argument('--batch_size', default=3, type=int, help='batchsize')
 parser.add_argument('--stride', default=2, type=int, help='stride')
 parser.add_argument('--pad', default=10, type=int, help='padding')
 parser.add_argument('--h', default=384, type=int, help='height')
@@ -57,7 +58,7 @@ parser.add_argument('--erasing_p', default=0, type=float, help='Random Erasing p
 parser.add_argument('--use_dense', action='store_true', help='use densenet121' )
 parser.add_argument('--use_NAS', action='store_true', help='use NAS' )
 parser.add_argument('--warm_epoch', default=0, type=int, help='the first K epoch that needs warm up')
-parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
+parser.add_argument('--lr', default=0.005, type=float, help='learning rate')
 parser.add_argument('--moving_avg', default=1.0, type=float, help='moving average')
 parser.add_argument('--droprate', default=0.5, type=float, help='drop rate')
 parser.add_argument('--DA', action='store_true', help='use Color Data Augmentation' )
@@ -94,9 +95,6 @@ if len(gpu_ids)>0:
 
 
     
-trainImgSet = getdatasets()
-
-train_loader = DataLoader(dataset=trainImgSet,batch_size=opt.batch_size ,shuffle=False)
 
 ######################################################################
 # Training the model
@@ -134,7 +132,12 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
     
     # zero the parameter gradients
     for epoch in range(num_epochs-start_epoch):
-
+        trainImgSet = None
+        trainImgSet = getdatasets()
+        train_loader = DataLoader(dataset=trainImgSet,batch_size=opt.batch_size ,shuffle=False)
+        
+        totalDs = 0.0
+        totalGD = 0.0
         filepath = 'train_log/train_log'+str(epoch)+'.txt'
         logfile = open(filepath, "w")   
         
@@ -148,6 +151,7 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
 
         index=0;
         # Iterate over data.
+        
         for index,items in enumerate(train_loader,0) :
             g1,d1,s1,g2,d2,s2 = items
             #show_data.show(g1,d1,s1,g1,'%dt1.jpg'%index)
@@ -156,11 +160,13 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
                 g1,d1,s1 = Variable(g1.cuda().detach()),Variable(d1.cuda().detach()),Variable(s1.cuda().detach())
                 g2,d2,s2 = Variable(g2.cuda().detach()),Variable(d2.cuda().detach()),Variable(s2.cuda().detach())
 
-            
-            result = model(g1,d1,s1,g2,d2,s2)
+            DSLoss = 0.0
+            GDLoss = 0.0
+            result = model(x2=d1,x3=s1,x5=d2,x6=s2)
                   
             feature_loss = torch.zeros(size=(1,1),dtype = float)
             unsertainty_loss =  torch.zeros(size=(1,1),dtype = float) 
+            
             if use_gpu:
                 feature_loss =  Variable(feature_loss.cuda().detach())
                 uncertainty_loss =  Variable(unsertainty_loss.cuda().detach())
@@ -176,37 +182,42 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             #print(result[0])
             #print(result[3])
             #print('-'*20)
-            gr1,dr1,sr1,gr2,dr2,sr2 = result
-            
-            #1 ground and satellite
-            feature_loss_gs1 =  FeaturesLoss(
-                        manchor=gr1[0],sanchor=gr1[2],
-                        mpositive=sr1[0],spositvie=sr1[2],
-                        mnegative=sr2[0],K=opt.loss_k)
-            feature_loss_gs1.backward(retain_graph=True)
+            dr1,sr1,dr2,sr2 = result
             
             #1 drone and satellite
             feature_loss_ds1 =  FeaturesLoss(
                         manchor=dr1[0],sanchor=dr1[2],
                         mpositive=sr1[0],spositvie=sr1[2],
-                        mnegative=sr2[0],K=opt.loss_k)
-            feature_loss_ds1.backward(retain_graph=True)
+                        mnegative=sr2[0],snegative=sr2[2])
+            DSLoss = DSLoss + feature_loss_ds1
             
-            #2 ground and satellite
-            feature_loss_gs2 =  FeaturesLoss(
-                        manchor=gr2[0],sanchor=gr2[2],
-                        mpositive=sr2[0],spositvie=sr2[2],
-                        mnegative=sr1[0],K=opt.loss_k)
-            feature_loss_gs2.backward(retain_graph=True)
+            #1 ground and drone. drone detach?No
+            
+            #feature_loss_gs1 =  FeaturesLoss(
+            #            manchor=gr1[0],sanchor=gr1[2],
+            #            mpositive=dr1[0],spositvie=dr1[0],
+            #           mnegative=dr2[0],snegative=sr2[2])
+            #GDLoss = GDLoss + feature_loss_gs1
             
             #2 drone and satellite
             feature_loss_ds2 =  FeaturesLoss(
                         manchor=dr2[0],sanchor=dr2[2],
                         mpositive=sr2[0],spositvie=sr2[2],
-                        mnegative=sr1[0],K=opt.loss_k)
-            feature_loss_ds2.backward(retain_graph=True)
+                        mnegative=sr1[0],snegative=sr2[2])
+            DSLoss = DSLoss + feature_loss_ds2
             
-            feature_loss = feature_loss_gs1 + feature_loss_gs2 + feature_loss_ds1 + feature_loss_ds2
+            
+            #2 ground and drone
+            #feature_loss_gs2 =  FeaturesLoss(
+            #            manchor=gr2[0],sanchor=gr2[2],
+            #            mpositive=dr2[0],spositvie=dr2[0],
+            #            mnegative=dr1[0],snegative=sr2[2])
+            #GDLoss = GDLoss + feature_loss_gs2
+           
+          
+            totalDs += DSLoss
+            #totalGD += GDLoss
+            
             uncertainty_loss = 0.0
             for item in result:
                 uncertainty_loss = uncertainty_loss +  UncertaintyLoss(disanchor=item[1])
@@ -242,20 +253,23 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
            
             
                    
-            optimizer.zero_grad()
     
+            optimizer.zero_grad()
             if uncertainty_loss < opt.loss_lamda :
                 runcertainty_loss = opt.loss_lamda - uncertainty_loss;
                 runcertainty_loss.backward(retain_graph=True)
-            #feature_loss.backward()
+            else :
+                uncertainty_loss.backward(retain_graph=True)
+            feature_loss = DSLoss #+ GDLoss
+            feature_loss.backward()
                 
             optimizer.step()
                 
             
-            print('[epoch:%d, iter:%d/%d] feature_loss: %.05f | real_unsertainty-Loss: %.05f ' 
-                          % (epoch + 1, index, len(train_loader) ,feature_loss,uncertainty_loss ))
-            print('[epoch:%d, iter:%d/%d] feature_loss: %.05f | real_unsertainty-Loss: %.05f ' 
-                          % (epoch + 1, index, len(train_loader) ,feature_loss,uncertainty_loss ),file=logfile)
+            print('[epoch:%d, iter:%d/%d] feature_loss DS: %8.05f | feature_loss GD: %8.05f | unsertainty-Loss: %.05f ' 
+                          % (epoch + 1, index, len(train_loader) , DSLoss,GDLoss,uncertainty_loss ))
+            print('[epoch:%d, iter:%d/%d] feature_loss DS: %8.05f | feature_loss GD: %8.05f | unsertainty-Loss: %.05f ' 
+                          % (epoch + 1, index, len(train_loader) , DSLoss,GDLoss,uncertainty_loss ),file=logfile)
        #     if feature_loss > 150:
        #         break
        # if feature_loss > 150:
@@ -264,19 +278,21 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
         logfile.close()
         
         time_elapsed = time.time() - since
-        print('Training complete in {:.0f}m {:.0f}s'.format(
-            time_elapsed // 60, time_elapsed % 60))
+        print('Training complete in .%0fm :%.0fs : avgDroneSatLoss:%.05f | avgDroneGroLoss:%.05f'%(
+            time_elapsed // 60, time_elapsed % 60, totalDs/len(train_loader), totalGD/len(train_loader)))
         print()
 
 
     time_elapsed = time.time() - since
-    print('Training complete in {:.0f}m {:.0f}s'.format(
+    print('Training complete in  in .%0fm :%.0fs'%(
         time_elapsed // 60, time_elapsed % 60))
     print()
     return model
 
 model = disNet(ccuda=use_gpu).to(device)
 
+#model = disNet().to(device)
+#model.load_state_dict(torch.load(MODELPATH))
 
 if start_epoch>=40:
     opt.lr = opt.lr*0.1

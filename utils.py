@@ -40,8 +40,8 @@ def save_network(network, dirname, epoch_label):
         save_filename = 'net_%s.pth'% epoch_label
     save_path = os.path.join('./model',dirname,save_filename)
     torch.save(network.cpu().state_dict(), save_path)
-    if torch.cuda.is_available:
-        network.cuda()
+    #if torch.cuda.is_available:
+    #    network.cuda()
 
 
 ######################################################################

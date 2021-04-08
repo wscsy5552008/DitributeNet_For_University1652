@@ -34,7 +34,9 @@ except ImportError: # will be 3.x series
 
 import math
 from Model_resNet import PreTrainResNet as resNet
-from LossFunc_lossCalc import FeaturesLoss,UncertaintyLoss,FeaturesLossWithoutSample
+from LossFunc_lossCalc import FeaturesLoss,UncertaintyLoss,FeaturesLossWithoutSample,ContrastiveLoss
+
+CrossTowviewLoss = ContrastiveLoss()
 ######################################################################
 # Options
 # --------
@@ -45,7 +47,7 @@ parser.add_argument('--pool',default='avg', type=str, help='pool avg')
 parser.add_argument('--data_dir',default='./data/train',type=str, help='training dir path')
 parser.add_argument('--train_all', action='store_true', help='use all training data' )
 parser.add_argument('--color_jitter', action='store_true', help='use color jitter in training' )
-parser.add_argument('--batch_size', default=3, type=int, help='batchsize')
+parser.add_argument('--batch_size', default=6, type=int, help='batchsize')
 parser.add_argument('--stride', default=2, type=int, help='stride')
 parser.add_argument('--pad', default=10, type=int, help='padding')
 parser.add_argument('--h', default=384, type=int, help='height')
@@ -57,7 +59,7 @@ parser.add_argument('--erasing_p', default=0, type=float, help='Random Erasing p
 parser.add_argument('--use_dense', action='store_true', help='use densenet121' )
 parser.add_argument('--use_NAS', action='store_true', help='use NAS' )
 parser.add_argument('--warm_epoch', default=0, type=int, help='the first K epoch that needs warm up')
-parser.add_argument('--lr', default=0.00001, type=float, help='learning rate')
+parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
 parser.add_argument('--moving_avg', default=1.0, type=float, help='moving average')
 parser.add_argument('--droprate', default=0.5, type=float, help='drop rate')
 parser.add_argument('--DA', action='store_true', help='use Color Data Augmentation' )
@@ -167,10 +169,11 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             #            mnegative=sr2)
             
             #1 drone and satellite
-            feature_loss_ds1 =  FeaturesLossWithoutSample(
-                        manchor=dr1,
-                        mpositive=sr1,
-                        mnegative=sr2)
+            feature_loss_ds1 = CrossTowviewLoss(dr1, sr1,1) + CrossTowviewLoss(dr1 ,dr2, 0)
+            #FeaturesLossWithoutSample(
+            #            manchor=dr1,
+            #            mpositive=sr1,
+            #            mnegative=sr2)
             #2 ground and satellite
             #feature_loss_gs2 =  FeaturesLossWithoutSample(
             #            manchor=gr2,
@@ -178,10 +181,11 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             #            mnegative=sr1)
             
             #2 drone and satellite
-            feature_loss_ds2 =  FeaturesLossWithoutSample(
-                        manchor=dr2,
-                        mpositive=sr2,
-                        mnegative=sr1)
+            feature_loss_ds2 = CrossTowviewLoss(dr2, sr2, 1) + CrossTowviewLoss(dr2, sr1, 0)
+            #FeaturesLossWithoutSample(
+            #           manchor=dr2,
+            #           mpositive=sr2,
+            #           mnegative=sr1)
             
             #feature_loss = feature_loss_gs1 + feature_loss_gs2 + 
             feature_loss = feature_loss_ds1 + feature_loss_ds2
@@ -234,11 +238,10 @@ if start_epoch>=40:
 
 ignored_params = list(map(id, model.parameters() ))
 base_params = filter(lambda p: id(p) not in ignored_params, model.parameters())
-optimizer_ft = optim.SGD([
-             {'params': base_params, 'lr': 0.1*opt.lr},
-             {'params': model.parameters(), 'lr': opt.lr}
-         ], weight_decay=5e-4, momentum=0.9, nesterov=True)
 
+
+optimizer_ft = optim.SGD(params = model.parameters(), lr = opt.lr)
+#optimizer_ft = optim.Rprop(params = model.parameters(), lr = opt.lr)
 # Decay LR by a factor of 0.1 every 40 epochs
 exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=80, gamma=0.1)
 
