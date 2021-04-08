@@ -76,30 +76,27 @@ class TripletUncertaintyLoss(nn.Module):
         #each vector has a diagno matrix
         
 #      1/2 log(  2 pi e squre)
-        sigma = torch.zeros(size=(1,1), dtype= float)
+        #sigma = torch.zeros(size=(1,1), dtype= float)
+        #if self.cuda == True:
+        #    sigma = Variable(sigma.cuda().detach())
+            
+        sumD = torch.zeros(size=(1,1), dtype= float)
         if self.cuda == True:
-            sigma = Variable(sigma.cuda().detach())
+            sumD = Variable(sumD.cuda().detach())
+            
             
         for i in range(m):   
             #batch 
-            
-            sumD = torch.zeros(size=(1,1), dtype= float)
-            if self.cuda == True:
-                sumD = Variable(sumD.cuda().detach())
-                
             for j in range(n):
                 if (disanchor[i][j] != 0):
                     sumD = sumD + torch.log(disanchor[i][j])
                 
-            if sumD != 0 :
-                sigma = sigma + sumD
-                
-        totalLoss = m* n/2 *(math.log(2*math.pi) + 1) + 1/2 * sigma
+        totalLoss = m* n/2 *(math.log(2*math.pi) + 1) + 1/2 * sumD
         #totalLoss = torch.log(sigma)
         if totalLoss > 0:
             return torch.log(1+totalLoss)
         else :
-            return torch.zeros(1)
+            return torch.ones(1)
     
 # out = (长度为numclasss的均值向量，方差向量，) 
 # result = (out1,out2,out3,out4,out5,out6)
@@ -124,7 +121,7 @@ def AvgSamples(samples):
         totalSample= totalSample + samples[i]
     return totalSample/(i+1)
 
-def FeaturesLoss(manchor,sanchor,mpositive,spositvie,mnegative,snegative,K = 30):
+def FeaturesLoss(manchor,sanchor,mpositive,spositvie,mnegative,snegative,K = 1):
     #anchor -> (mean,[sample])
     totalLoss = TriFrobeniusLoss(manchor,mpositive,mnegative, 0.01)#CrossTowviewLoss(manchor, mpositive, 1) + CrossTowviewLoss(manchor, mnegative, 0)
     #print("FeatureLoss:%f"%totalLoss)
