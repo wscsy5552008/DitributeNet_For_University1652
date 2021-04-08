@@ -11,3 +11,4 @@ BATCH_SIZE = 50
 LR = 0.01
 K=10
 LAMDA = 2
+CUDA = True

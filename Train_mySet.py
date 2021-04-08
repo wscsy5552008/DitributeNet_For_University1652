@@ -12,28 +12,24 @@ import torch
 import torch.optim as optim
 from torch.optim import lr_scheduler
 from torch.autograd import Variable
-from torchvision import datasets, transforms
 import torch.backends.cudnn as cudnn
-import show_data
 #import matplotlib
 #matplotlib.use('agg')
 #from PIL import Image
 import time
 from Data_presolveing import getdatasets
-import os
-from random_erasing import RandomErasing
 from utils import load_network, save_network
 version =  torch.__version__
 from torch.utils.data import DataLoader
+from Par_train import CUDA
 #fp16
-try:
-    from apex.fp16_utils import *
-    from apex import amp, optimizers
-except ImportError: # will be 3.x series
-    print('This is not an error. If you want to use low precision, i.e., fp16, please install the apex with cuda support (https://github.com/NVIDIA/apex) and update pytorch to 1.0')
+#try:
+#    from apex.fp16_utils import *
+#    from apex import amp, optimizers
+#except ImportError: # will be 3.x series
+#    print('This is not an error. If you want to use low precision, i.e., fp16, please install the apex with cuda support (https://github.com/NVIDIA/apex) and update pytorch to 1.0')
 
 MODELPATH = "model/tri_view/net_001.pth"
-import math
 from Model_distributeNet import PreTrainDisNet as disNet
 from LossFunc_lossCalc import FeaturesLoss,TripletUncertaintyLoss
 ######################################################################
@@ -46,7 +42,7 @@ parser.add_argument('--pool',default='avg', type=str, help='pool avg')
 parser.add_argument('--data_dir',default='./data/train',type=str, help='training dir path')
 parser.add_argument('--train_all', action='store_true', help='use all training data' )
 parser.add_argument('--color_jitter', action='store_true', help='use color jitter in training' )
-parser.add_argument('--batch_size', default=3, type=int, help='batchsize')
+parser.add_argument('--batch_size', default=1, type=int, help='batchsize')
 parser.add_argument('--stride', default=2, type=int, help='stride')
 parser.add_argument('--pad', default=10, type=int, help='padding')
 parser.add_argument('--h', default=384, type=int, help='height')
@@ -109,7 +105,7 @@ if len(gpu_ids)>0:
 # In the following, parameter ``scheduler`` is an LR scheduler object from
 # ``torch.optim.lr_scheduler``.
 device = torch.device("cpu")
-use_gpu = False
+use_gpu = CUDA
 if use_gpu:
     device = torch.device("cuda")
     use_gpu = torch.cuda.is_available()

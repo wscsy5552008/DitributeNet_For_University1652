@@ -1,3 +1,0 @@
-----------
-[epoch:1, iter:0/20] feature_loss DS:  2.99921 | feature_loss GD:  0.00000 | unsertainty-Loss: 33.22249 
-[epoch:1, iter:1/20] feature_loss DS:  3.01658 | feature_loss GD:  0.00000 | unsertainty-Loss: 33.27618 

@@ -8,6 +8,7 @@ import torch.nn as nn
 import torch
 import math
 from torch.autograd import Variable
+from Par_train import CUDA
 import torch.nn.functional as F
 
 triplet_loss = nn.TripletMarginLoss(margin=1, p=2)
@@ -44,9 +45,10 @@ class FrobeniusTriLoss(torch.nn.Module):
     Based on: http://yann.lecun.com/exdb/publis/pdf/hadsell-chopra-lecun-06.pdf
     """
 
-    def __init__(self, margin = 4.0):
+    def __init__(self, margin = 4.0,cuda=False):
         super(FrobeniusTriLoss, self).__init__()
         self.margin = margin
+        self.cuda = cuda
          
     def forward(self, anchor, posi, nege = None, alpha = 0.01):
         
@@ -58,11 +60,15 @@ class FrobeniusTriLoss(torch.nn.Module):
             m = f1
         #print("FrobeniusLoss: %f"%m)
         if m < 0 :
-            return torch.zeros(1)
-        
-        return torch.log(1+torch.pow(torch.zeros(1) + math.e,alpha * m))
+            return torch.zeros(1).cuda()
+        t0 = torch.zeros(1) + math.e
+        if self.cuda == True:
+            t0 =  Variable(t0.cuda().detach())
+           
+        t1 = torch.pow(t0, alpha * m)
+        return torch.log(t1)
     
-TriFrobeniusLoss = FrobeniusTriLoss()
+TriFrobeniusLoss = FrobeniusTriLoss(cuda=CUDA)
 
 class TripletUncertaintyLoss(nn.Module):
     
@@ -108,6 +114,8 @@ class TripletUncertaintyLoss(nn.Module):
 def SampleLoss(samples,target):
     #[N*samples向量] and meansTarget
     totalLoss = torch.zeros(1,dtype = float)
+    if CUDA:
+        totalLoss = Variable(totalLoss.cuda().detach())
     #totalSample = samples[0]
     for i in range(0,len(samples)):
         #totalSample= totalSample + samples[i]
