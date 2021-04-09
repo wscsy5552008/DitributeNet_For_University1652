@@ -57,15 +57,18 @@ class FrobeniusTriLoss(torch.nn.Module):
             m = (f1-f2 + self.margin)
         else :
             m = f1
-        #print("FrobeniusLoss: %f"%m)
-        if m < 0 :
-            return torch.zeros(1)
 
         t0 = torch.zeros(1) + math.e
+        
         if self.use_gpu == True:
             t0 =  Variable(t0.cuda().detach())
            
+        #print("FrobeniusLoss: %f"%m)
+        if m < 0 :
+            m = 0
+        
         t1 = torch.pow(t0, alpha * m)
+        
         return torch.log(t1)
     
 TriFrobeniusLoss = FrobeniusTriLoss()
@@ -113,7 +116,7 @@ class TripletUncertaintyLoss(nn.Module):
        
 def SampleLoss(samples,target):
     #[N*samples向量] and meansTarget
-    totalLoss = torch.zeros(1,dtype = float)
+    totalLoss = torch.zeros(1,dtype = float,requires_grad=True)
     if USE_GPU:
         totalLoss = Variable(totalLoss.cuda().detach())
     #totalSample = samples[0]

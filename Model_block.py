@@ -25,6 +25,7 @@ class ResBlock(nn.Module):
             nn.Conv2d(out_channel, out_channel, kernel_size = 3, stride = 1, padding = 1, bias=False),
             nn.BatchNorm2d(out_channel)
             )
+        self.relu = nn.ReLU(inplace=True)
         
         self.shortcut = nn.Sequential()
         if stride != 1 or in_channel != out_channel:
@@ -35,7 +36,7 @@ class ResBlock(nn.Module):
     def forward(self, x):
         out = self.left(x)
         out = out +self.shortcut(x)
-        out = F.relu(out)
+        out = self.relu(out)
         return out 
 
 

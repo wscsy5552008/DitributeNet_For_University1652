@@ -29,7 +29,7 @@ try:
     from apex import amp, optimizers
 except ImportError: # will be 3.x series
     print('This is not an error. If you want to use low precision, i.e., fp16, please install the apex with cuda support (https://github.com/NVIDIA/apex) and update pytorch to 1.0')
-MODELPATH = "model\\Unive1652\\net_000.pth"
+MODELPATH = "model\\three_view\\net_000.pth"
 #MODELPATH = "C:\\Users\\Jinda\\Desktop\\源代码\\university1652-model\\three_view_long_share_d0.75_256_s1_google\\net_119.pth"
 from Model_distributeNet import three_view_net
 from LossFunc_lossCalc import FeaturesLoss,TripletUncertaintyLoss
@@ -53,7 +53,7 @@ parser.add_argument('--extra_Google', action='store_true', help='using extra noi
 parser.add_argument('--views', default=3, type=int, help='the number of views')
 parser.add_argument('--share', action='store_true', help='share weight between different view' )
 parser.add_argument('--fp16', action='store_true', help='use float16 instead of float32, which will save about 50% memory' )
-parser.add_argument('--batch_size', default=8, type=int, help='batchsize')
+parser.add_argument('--batch_size', default=2, type=int, help='batchsize')
 parser.add_argument('--stride', default=2, type=int, help='stride')
 parser.add_argument('--pad', default=10, type=int, help='padding')
 parser.add_argument('--pool',default='avg', type=str, help='pool avg')
@@ -156,6 +156,8 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
     #best_acc = 0.0
     #warm_up = 0.1 # We start from the 0.1*lrRate
     #warm_iteration = round(dataset_sizes['satellite']/opt.batch_size)*opt.warm_epoch # first 5 epoch
+    model.train(True)  # Set model to training mod
+    model.to(device)
     
     # zero the parameter gradients
     for epoch in range(num_epochs-start_epoch):
@@ -177,20 +179,23 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
         print('-' * 10)
         print('-' * 10,file=logfile)
         # Each epoch has a training and validation phase
-
-        model.train(True)  # Set model to training mode
+        
+        
 
         index=0
         # Iterate over data.
         
-        for index,items in enumerate(train_loader,0) :
+        for index,items in enumerate(train_loader,0) : 
+            now_batch_size = len(items[0])
+            if now_batch_size<opt.batch_size: # skip the last batch
+                continue
             g1,d1,s1,g2,d2,s2 = items
             #show_data.show(g1,d1,s1,g1,'%dt1.jpg'%index)
             #show_data.show(g2,d2,s2,g2,'%dt2.jpg'%index)
             if use_gpu:
                 g1,d1,s1 = Variable(g1.cuda().detach()),Variable(d1.cuda().detach()),Variable(s1.cuda().detach())
                 g2,d2,s2 = Variable(g1.cuda().detach()),Variable(d2.cuda().detach()),Variable(s2.cuda().detach())
-
+              
             DSLoss = 0.0
             GDLoss = 0.0
             result1 = model(satellite = s1, ground = g1,drone = d1)
@@ -265,9 +270,8 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             optimizer.zero_grad()
             if uncertainty_loss < opt.loss_lamda :
                 runcertainty_loss = opt.loss_lamda - uncertainty_loss
-                runcertainty_loss.backward(retain_graph=True)
-            else :
-                uncertainty_loss.backward(retain_graph=True)
+                feature_loss = feature_loss + uncertainty_loss
+   
 
             feature_loss.backward()
             optimizer.step()

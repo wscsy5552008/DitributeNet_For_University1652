@@ -5,7 +5,7 @@ from torch.nn import init
 from torchvision import models
 from torch.autograd import Variable
 from torch.nn import functional as F
-
+from Par_train import USE_GPU as use_gpu
 ######################################################################
 class GeM(nn.Module): # as a Pool layer
     # channel-wise GeM zhedong zheng
@@ -145,7 +145,7 @@ class ft_net(nn.Module):
 
     def __init__(self, class_num, droprate=0.5, stride=2, init_model=None, pool='avg'):
         super(ft_net, self).__init__()
-        model_ft = models.resnet50(pretrained=True)
+        model_ft = models.resnet50(pretrained=False)
         # avg pooling to global pooling
         if stride == 1:
             model_ft.layer4[0].downsample[0].stride = (1,1)
@@ -165,7 +165,7 @@ class ft_net(nn.Module):
             model_ft.gem2 = GeM(dim=2048)
 
         self.model = model_ft
-
+            
         if init_model!=None:
             self.model = init_model.model
             self.pool = init_model.pool

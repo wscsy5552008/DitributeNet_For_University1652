@@ -1,5 +1,6 @@
 import os
 import torch
+from Par_train import USE_GPU as use_gpu
 #import yaml
 
 def make_weights_for_balanced_classes(images, nclasses):
@@ -40,9 +41,8 @@ def save_network(network, dirname, epoch_label):
         save_filename = 'net_%s.pth'% epoch_label
     save_path = os.path.join('./model',dirname,save_filename)
     torch.save(network.cpu().state_dict(), save_path)
-    #if torch.cuda.is_available:
-    #    network.cuda()
-
+    if use_gpu:
+        network.cuda()
 
 ######################################################################
 #  Load model for resume
