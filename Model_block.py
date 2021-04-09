@@ -45,12 +45,11 @@ class DisBlock(nn.Module):
         dis is the distribution features
         samples contains numclass=100 sample features
     '''
-    def __init__(self, in_channel = 512, out_channel = 512, stride = 2,num_classes = 1000,num_samples = 100,use_gpu=False):
+    def __init__(self, in_channel = 512, out_channel = 512, stride = 2,num_samples = 100,use_gpu=False):
         #define self parameters
         super(DisBlock, self).__init__()
         self.use_gpu = use_gpu
         self.inchannel = in_channel
-        self.num_classes = num_classes
         self.num_samples = num_samples
         
         #define network
@@ -95,14 +94,16 @@ class DisBlock(nn.Module):
         #dis yao softmax
         # dis = dis + torch.ones(dis.size())
         '''
+
         #now cal mean
         avg = x.mean([-2,-1])
         #and dis
         disx = Variable(x.detach()) 
         dis = self.disLayer(disx)
         dis = dis.mean([-2,-1])
-      
+        
         samples = self.getSamples(avg,dis)
+        
         return avg,dis,samples
         
     #ResNet    

@@ -29,8 +29,8 @@ try:
     from apex import amp, optimizers
 except ImportError: # will be 3.x series
     print('This is not an error. If you want to use low precision, i.e., fp16, please install the apex with cuda support (https://github.com/NVIDIA/apex) and update pytorch to 1.0')
-
-MODELPATH = "C:\\Users\\Jinda\\Desktop\\源代码\\university1652-model\\three_view_long_share_d0.75_256_s1_google\\net_119.pth"
+MODELPATH = "model\\Unive1652\\net_000.pth"
+#MODELPATH = "C:\\Users\\Jinda\\Desktop\\源代码\\university1652-model\\three_view_long_share_d0.75_256_s1_google\\net_119.pth"
 from Model_distributeNet import three_view_net
 from LossFunc_lossCalc import FeaturesLoss,TripletUncertaintyLoss
 from Par_train import EPOCH, USE_GPU
@@ -324,22 +324,29 @@ if __name__ == '__main__':
     # Load a pretrainied model and reset final fully connected layer.
     #
 
-    model = three_view_net(use_gpu=use_gpu).to(device)
     #model = three_view_net(use_gpu=use_gpu).to(device)
-    #model.load_state_dict(torch.load(MODELPATH))
+    model = three_view_net(use_gpu=use_gpu).to(device)
+    model.load_state_dict(torch.load(MODELPATH))
 
     # For resume:
     if start_epoch>=40:
         opt.lr = opt.lr*0.1
 
-    ignored_params = list(map(id, model.model_1.dislayer.parameters() )) + list(map(id, model.model_2.dislayer.parameters() ))
+    ignored_params = list(map(id, model.disblock_1.parameters() )) + list(map(id, model.disblock_2.parameters() ))
     base_params = filter(lambda p: id(p) not in ignored_params, model.parameters())
     optimizer_ft = optim.SGD([
                 {'params': base_params, 'lr': 0.1*opt.lr},
-                {'params': model.model_1.dislayer.parameters(), 'lr': opt.lr},
-                {'params': model.model_2.dislayer.parameters(), 'lr': opt.lr}
+                {'params': model.disblock_1.parameters(), 'lr': opt.lr},
+                {'params': model.disblock_2.parameters(), 'lr': opt.lr}
             ], weight_decay=5e-4, momentum=0.9, nesterov=True)
-            
+    
+    #ignored_params = list(map(id, model.classifier.parameters() )) #返回一串parameters的标识符， 因为classifier层是被忽略的，所以这里是ignore
+    #base_params = filter(lambda p: id(p) not in ignored_params, model.parameters())#过滤掉这些元素，这其实可以直接拿来用，因为我也不需要这里的classsifier
+    #optimizer_ft = optim.SGD([
+    #         {'params': base_params, 'lr': 0.1*opt.lr},
+    #         {'params': model.classifier.parameters(), 'lr': opt.lr}
+    #     ], weight_decay=5e-4, momentum=0.9, nesterov=True)
+#这里的意思是设置不同的学习率
     # Decay LR by a factor of 0.1 every 40 epochs
     exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=80, gamma=0.1)
 
@@ -364,5 +371,9 @@ if __name__ == '__main__':
 
     if fp16:
         model, optimizer_ft = amp.initialize(model, optimizer_ft, opt_level = "O1")
-
+        print("fp")
+    #o = open("wight2.txt","w")
+    #print(model.state_dict(),file=o)
+    #model.change()
+    #save_network(model,'Unive1652',0)
     model = train_model(model, FeaturesLoss, UncertaintyLoss, optimizer_ft, exp_lr_scheduler,num_epochs=EPOCH)
