@@ -32,7 +32,7 @@ except ImportError: # will be 3.x series
     print('This is not an error. If you want to use low precision, i.e., fp16, please install the apex with cuda support (https://github.com/NVIDIA/apex) and update pytorch to 1.0')
 
 import math
-from Model_distributeNet import PreTrainDisNet as disNet
+from Model_distributeNet import dis_net as disNet
 from LossFunc_lossCalc import FeaturesLoss,UncertaintyLoss
 ######################################################################
 # Options

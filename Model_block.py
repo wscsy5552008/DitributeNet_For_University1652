@@ -40,23 +40,37 @@ class ResBlock(nn.Module):
 
 
 class DisBlock(nn.Module):
-    def __init__(self, in_channel = 256, out_channel = 512, stride = 1,num_classes = 1000,cuda=False):
-        self.cuda = cuda
+    ''' return tuple(avg,dis,smaples)
+        avg is the traditional features
+        dis is the distribution features
+        samples contains numclass=100 sample features
+    '''
+    def __init__(self, in_channel = 512, out_channel = 512, stride = 2,num_classes = 1000,num_samples = 100,use_gpu=False):
+        #define self parameters
         super(DisBlock, self).__init__()
+        self.use_gpu = use_gpu
         self.inchannel = in_channel
         self.num_classes = num_classes
-        self.avgLayer = self.make_layer(ResBlock, channels = out_channel, num_blocks = 2, stride=2)
-        self.avg_poolLayer = nn.AvgPool2d(4)
-        self.avg_relu = nn.ReLU()
+        self.num_samples = num_samples
         
-        self.disLayer = self.make_layer(ResBlock, channels = out_channel, num_blocks = 2, stride=2)
+        #define network
+        '''
+        self.avgLayer = self.make_layer(ResBlock, channels = out_channel, num_blocks = 2, stride=stride)
         self.afc = nn.Linear(out_channel*9, num_classes)
+        self.avg_poolLayer = nn.AvgPool2d(4)
+
+        self.disLayer = self.make_layer(ResBlock, channels = out_channel, num_blocks = 2, stride=stride)
         self.dfc = nn.Linear(out_channel*9, num_classes)
         self.dis_poolLayer = nn.AvgPool2d(4)
+
         self.relu = nn.ReLU()
         self.softmax = nn.Softmax(dim=0)
+        self.dfc = nn.Linear(out_channel*9, num_classes)
+        self.dis_poolLayer = nn.AvgPool2d(4)
+        '''
+        self.disLayer = self.make_layer(ResBlock, channels = out_channel, num_blocks = 2, stride=stride)
         
-    
+
     def make_layer(self, block, channels, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
@@ -67,34 +81,29 @@ class DisBlock(nn.Module):
         return nn.Sequential(*layers)
     
     def forward(self, x):
-        
+        '''
         avg = self.avgLayer(x)
         avg = self.avg_poolLayer(avg)
         avg = torch.flatten(avg, 1)
         avg = self.afc(avg)
-        
-        
-        #avg = avg.view(avg.size(0),-1)
-        #avg = self.fc(avg)
         avg = self.relu(avg)
         avg = avg.reshape(-1,self.num_classes)
-        #avg = self.softmax(avg)
         
-        disx = Variable(x.detach())
-        dis = self.disLayer(disx)
-        dis = self.dis_poolLayer(dis)
-        
-        dis = torch.flatten(dis, 1)
         dis = self.dfc(dis)
-        
-        #dis = dis.view(dis.size(0),-1)
-        #dis = self.fc(dis)
         dis = self.relu(dis)
         dis = dis.reshape(-1,self.num_classes)
         #dis yao softmax
         # dis = dis + torch.ones(dis.size())
-        
-        return avg,dis,self.getSamples(avg,dis)
+        '''
+        #now cal mean
+        avg = x.mean([-2,-1])
+        #and dis
+        disx = Variable(x.detach()) 
+        dis = self.disLayer(disx)
+        dis = dis.mean([-2,-1])
+      
+        samples = self.getSamples(avg,dis)
+        return avg,dis,samples
         
     #ResNet    
     #    out = F.avg_pool2d(out,4)    
@@ -105,20 +114,21 @@ class DisBlock(nn.Module):
     #disNet:Now out = (512副均值图像，512副方差图像，【N*512副samples图像】) / -> 改成 长度为numclasss的向量 
     #           out = (长度为numclasss的均值向量，方差向量，【N*samples向量】) / -> 改成 长度为numclasss的向量 
         
-    def getSamples(self,avgOri,dis,size = 10):
+    def getSamples(self,avgOri,dis):
         samples = []
         avg = Variable(avgOri.detach())
-        for i in range(size):
+        
+        for i in range(self.num_samples):
             #sample from N(1,0)
             torchSize = tuple(avg.size())
-            e = np.random.randn(*torchSize)
-            e = torch.from_numpy(e)
-            if self.cuda== True :
-                e = e.to("cuda")
+            randomgauss = np.random.randn(*torchSize)
+            randomgauss = torch.from_numpy(randomgauss)
+            if self.use_gpu== True :
+                randomgauss = randomgauss.to("cuda")
             #e mult dis
-            distribute = e * dis
+            distribution =dis * randomgauss
             #dis plus avg
-            sample = distribute + avg
+            sample = avg + distribution
             samples.append(sample.float())
-        #return sample
+        
         return samples

@@ -4,17 +4,20 @@ Created on Sun Mar 21 13:58:27 2021
 
 @author: Jinda
 """
-from Model_distributeNet import PreTrainDisNet as DisNet
+from Model_distributeNet import dis_net as DisNet, three_view_net
 import torch
 import os
 import numpy as np
 from PIL import Image
 from torchvision import transforms
 import random
+from utils_from_others.autoaugment import ImageNetPolicy
+from utils_from_others.random_erasing import RandomErasing
+import Par_train as para
 import show_data
-target_drone = '../data/train/drone'
-target_ground = '../data/train/street'
-target_satellite = '../data/train/satellite'
+target_drone = 'data/train/drone'
+target_ground = 'data/train/street'
+target_satellite = 'data/train/satellite'
 #target_root = 'data/train/google'
 
 target_test_satellite = '../data/test/gallery_satellite'
@@ -38,9 +41,14 @@ def getdronedatasets(model):
     
     
 def gettestdatasets(model,path,view):
+    
     transform1 = transforms.Compose([
-        transforms.CenterCrop((384,384)), # 只能对PIL图片进行裁剪
+        transforms.CenterCrop((para.H,para.W)), # 只能对PIL图片进行裁剪
+        transforms.Pad( 10, padding_mode='edge'),
+        transforms.RandomCrop((para.H,para.W)),
+        transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ]
         )
     datasets = []
@@ -67,11 +75,14 @@ def gettestdatasets(model,path,view):
         
         with torch.no_grad():
             if view=='ground':
-                result = model(x1 = sate_tensor.unsqueeze(0))
-            else:
-                result = model(x3 = sate_tensor.unsqueeze(0))
+                sr,gr,dr = model(ground = sate_tensor.unsqueeze(0))
+            elif view=='satellite':
+                sr,gr,dr = model(satellite = sate_tensor.unsqueeze(0))
+            elif view=='drone':
+                sr,gr,dr = model(drone = sate_tensor.unsqueeze(0))
                 
-        if isinstance(model, DisNet):
+        #print(len(result))
+        #if isinstance(model, three_view_net):
             # result:  avg,dis,self.getSamples(avg,dis)
             # treat dis as a possibility?
             
@@ -81,49 +92,71 @@ def gettestdatasets(model,path,view):
             #for i,item in enumerate(samples,0):
             #    tmp+=item
             #result = tmp/i
-            result = result[0]
+        if view=='ground':
+            result = gr[0]
+        elif view=='satellite':
+            result = sr[0]
+        elif view=='drone':
+            result = dr[0]
+        #    result = [0]
         label.append(folder_name)
         datasets.append(result.squeeze(0).numpy())
             
     return np.array(label),np.array(datasets)
             
-def getdatasets():
+def getdatasets(opt):
     transform1 = transforms.Compose([
-        transforms.CenterCrop((384,384)), # 只能对PIL图片进行裁剪
+        transforms.CenterCrop((opt.h, opt.w)), # 只能对PIL图片进行裁剪
+        transforms.Pad( opt.pad, padding_mode='edge'),
+        transforms.RandomCrop((opt.h, opt.w)),
+        transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ]
         )
-    
+        
+    if opt.erasing_p>0:
+        transform1 = transform1 +  [RandomErasing(probability = opt.erasing_p, mean=[0.0, 0.0, 0.0])]
+
+    if opt.color_jitter:
+        transform1 = [transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0)] + transform1
+        transform1 = [transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0)] + transform1
+
+    if opt.DA:
+        transform1 = [ImageNetPolicy()] + transform1
+
     datasets = []
     
-    foldeList =os.listdir(target_drone)
+    foldeList =os.listdir(opt.data_dir + target_drone)
     random.shuffle(foldeList)
     for fi,folder_name in enumerate(foldeList,0):
         if fi% 10 == 0 :
-            print('………………reading………………:%d/%d'%(fi,len(os.listdir(target_drone))))
-            
+            print('………………reading………………:%d/%d'%(fi,len(os.listdir(opt.data_dir + target_drone))))
+    
         if fi % 2 == 0:
             anfolder_name = folder_name
-            anfolder_root = target_drone + '/' + anfolder_name
+            anfolder_root = opt.data_dir + target_drone + '/' + anfolder_name
             continue
         
-        folder_root = target_drone + '/' + folder_name
+        if fi >100:
+            break
+        folder_root = opt.data_dir + target_drone + '/' + folder_name
         if not os.path.isdir(folder_root):
             continue
         
         #satelite item count
-        satlist = os.listdir(target_satellite + '/' + folder_name)
+        satlist = os.listdir(opt.data_dir + target_satellite + '/' + folder_name)
         slen = len(satlist)
         #gound item count
-        grolist = os.listdir(target_ground + '/' + folder_name)
+        grolist = os.listdir(opt.data_dir + target_ground + '/' + folder_name)
         glen = len(grolist)
             
         
         #another satelite item count
-        ansatlist = os.listdir(target_satellite + '/' + anfolder_name)
+        ansatlist = os.listdir(opt.data_dir + target_satellite + '/' + anfolder_name)
         anslen = len(ansatlist)
         #another gound item count
-        angrolist = os.listdir(target_ground + '/' + anfolder_name)
+        angrolist = os.listdir(opt.data_dir + target_ground + '/' + anfolder_name)
         anglen = len(angrolist)
         
         andronelist =  os.listdir(anfolder_root)
@@ -136,12 +169,12 @@ def getdatasets():
             drone_tensor = transform1(drone_view)
             
             #get satellite pic
-            satellite_view = Image.open(target_satellite + '/' + folder_name+ '/' + satlist[i % slen])          
+            satellite_view = Image.open(opt.data_dir + target_satellite + '/' + folder_name+ '/' + satlist[i % slen])          
             satellite_view = satellite_view.convert('RGB')
             satellite_tensor = transform1(satellite_view)
           
             #get ground pic
-            ground_view = Image.open(target_ground + '/' + folder_name + '/' + grolist[i % glen])          
+            ground_view = Image.open(opt.data_dir + target_ground + '/' + folder_name + '/' + grolist[i % glen])          
             ground_view = ground_view.convert('RGB')
             ground_tensor = transform1(ground_view)
             
@@ -153,12 +186,12 @@ def getdatasets():
             androne_tensor = transform1(androne_view)
             
             #an get satellite pic
-            ansatellite_view = Image.open(target_satellite + '/' + anfolder_name+ '/' + ansatlist[i % anslen])          
+            ansatellite_view = Image.open(opt.data_dir + target_satellite + '/' + anfolder_name+ '/' + ansatlist[i % anslen])          
             ansatellite_view = ansatellite_view.convert('RGB')
             ansatellite_tensor = transform1(ansatellite_view)
           
             #an get ground pic
-            anground_view = Image.open(target_ground + '/' + anfolder_name + '/' + angrolist[i % anglen])          
+            anground_view = Image.open(opt.data_dir + target_ground + '/' + anfolder_name + '/' + angrolist[i % anglen])          
             anground_view = anground_view.convert('RGB')
             anground_tensor = transform1(anground_view)
             

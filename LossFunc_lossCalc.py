@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch
 import math
 from torch.autograd import Variable
-from Par_train import CUDA
+from Par_train import USE_GPU
 import torch.nn.functional as F
 
 triplet_loss = nn.TripletMarginLoss(margin=1, p=2)
@@ -42,13 +42,12 @@ CrossTowviewLoss = ContrastiveLoss(margin=2.0)
 class FrobeniusTriLoss(torch.nn.Module):
     """
     TwoView Frobenius loss function.
-    Based on: http://yann.lecun.com/exdb/publis/pdf/hadsell-chopra-lecun-06.pdf
     """
 
-    def __init__(self, margin = 4.0,cuda=False):
+    def __init__(self, margin = 4.0,use_gpu=USE_GPU):
         super(FrobeniusTriLoss, self).__init__()
         self.margin = margin
-        self.cuda = cuda
+        self.use_gpu = use_gpu
          
     def forward(self, anchor, posi, nege = None, alpha = 0.01):
         
@@ -60,41 +59,42 @@ class FrobeniusTriLoss(torch.nn.Module):
             m = f1
         #print("FrobeniusLoss: %f"%m)
         if m < 0 :
-            return torch.zeros(1).cuda()
+            return torch.zeros(1)
+
         t0 = torch.zeros(1) + math.e
-        if self.cuda == True:
+        if self.use_gpu == True:
             t0 =  Variable(t0.cuda().detach())
            
         t1 = torch.pow(t0, alpha * m)
         return torch.log(t1)
     
-TriFrobeniusLoss = FrobeniusTriLoss(cuda=CUDA)
+TriFrobeniusLoss = FrobeniusTriLoss()
 
 class TripletUncertaintyLoss(nn.Module):
     
-    def __init__(self,cuda=False):
+    def __init__(self,use_gpu=USE_GPU):
         super(TripletUncertaintyLoss, self).__init__()
-        self.cuda = cuda
+        self.use_gpu = use_gpu
         
     def forward(self,disanchor):
         m = len(disanchor)
         n = len(disanchor[0])
         #each vector has a diagno matrix
         
-#      1/2 log(  2 pi e squre)
+        #1/2 log(  2 pi e squre)
         #sigma = torch.zeros(size=(1,1), dtype= float)
         #if self.cuda == True:
         #    sigma = Variable(sigma.cuda().detach())
             
-        sumD = torch.zeros(size=(1,1), dtype= float)
-        if self.cuda == True:
+        sumD = torch.ones(size=(1,1), dtype= float, requires_grad=True)
+        if self.use_gpu == True:
             sumD = Variable(sumD.cuda().detach())
             
             
         for i in range(m):   
             #batch 
             for j in range(n):
-                if (disanchor[i][j] != 0):
+                if (disanchor[i][j] != 0 and disanchor[i][j] != 1):
                     sumD = sumD + torch.log(disanchor[i][j])
                 
         totalLoss = m* n/2 *(math.log(2*math.pi) + 1) + 1/2 * sumD
@@ -114,7 +114,7 @@ class TripletUncertaintyLoss(nn.Module):
 def SampleLoss(samples,target):
     #[N*samples向量] and meansTarget
     totalLoss = torch.zeros(1,dtype = float)
-    if CUDA:
+    if USE_GPU:
         totalLoss = Variable(totalLoss.cuda().detach())
     #totalSample = samples[0]
     for i in range(0,len(samples)):

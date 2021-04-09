@@ -6,13 +6,13 @@ Created on Fri Apr  2 16:25:04 2021
 """
 
 from __future__ import print_function, division
-from Model_distributeNet import PreTrainDisNet as DisNet
+from Model_distributeNet import three_view_net
 import numpy as np
 import faiss
 import torch
 from Data_presolveing import getsatedatasets, getgrounddatasets, getdronedatasets
 version =  torch.__version__
-MODELPATH = "model/tri_view/net_009.pth"
+MODELPATH = "model/three_view/net_023.pth"
 load = False
 def test(model):
     if load == False:
@@ -82,6 +82,6 @@ def test(model):
             
 
 if __name__ == '__main__':
-    model = DisNet()
+    model = three_view_net()
     model.load_state_dict(torch.load(MODELPATH))
     test(model)
