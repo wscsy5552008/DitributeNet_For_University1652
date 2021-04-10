@@ -89,7 +89,7 @@ class TripletUncertaintyLoss(nn.Module):
         #if self.cuda == True:
         #    sigma = Variable(sigma.cuda().detach())
             
-        sumD = torch.ones(size=(1,1), dtype= float, requires_grad=True)
+        sumD = torch.ones(size=(1,1), dtype= disanchor.dtype, requires_grad=True)
         if self.use_gpu == True:
             sumD = Variable(sumD.cuda().detach())
             
@@ -116,7 +116,7 @@ class TripletUncertaintyLoss(nn.Module):
        
 def SampleLoss(samples,target):
     #[N*samples向量] and meansTarget
-    totalLoss = torch.zeros(1,dtype = float,requires_grad=True)
+    totalLoss = torch.zeros(1,dtype = target.dtype,requires_grad=True)
     if USE_GPU:
         totalLoss = Variable(totalLoss.cuda().detach())
     #totalSample = samples[0]

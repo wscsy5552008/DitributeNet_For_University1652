@@ -29,7 +29,7 @@ try:
     from apex import amp, optimizers
 except ImportError: # will be 3.x series
     print('This is not an error. If you want to use low precision, i.e., fp16, please install the apex with cuda support (https://github.com/NVIDIA/apex) and update pytorch to 1.0')
-MODELPATH = "model\\three_view\\net_000.pth"
+
 #MODELPATH = "C:\\Users\\Jinda\\Desktop\\源代码\\university1652-model\\three_view_long_share_d0.75_256_s1_google\\net_119.pth"
 from Model_distributeNet import three_view_net
 from LossFunc_lossCalc import FeaturesLoss,TripletUncertaintyLoss
@@ -53,7 +53,7 @@ parser.add_argument('--extra_Google', action='store_true', help='using extra noi
 parser.add_argument('--views', default=3, type=int, help='the number of views')
 parser.add_argument('--share', action='store_true', help='share weight between different view' )
 parser.add_argument('--fp16', action='store_true', help='use float16 instead of float32, which will save about 50% memory' )
-parser.add_argument('--batch_size', default=2, type=int, help='batchsize')
+parser.add_argument('--batch_size', default=8, type=int, help='batchsize')
 parser.add_argument('--stride', default=2, type=int, help='stride')
 parser.add_argument('--pad', default=10, type=int, help='padding')
 parser.add_argument('--pool',default='avg', type=str, help='pool avg')
@@ -98,16 +98,19 @@ parser.add_argument('--color_jitter', action='store_true', help='use color jitte
 #    transform_train_list = [transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0)] + transform_train_list
 #    transform_satellite_list = [transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0)] + transform_satellite_list
 parser.add_argument('--erasing_p', default=0, type=float, help='Random Erasing probability, in [0,1]')
+parser.add_argument('--start', default=20, type=int, help='the first K epoch that needs warm up')
 #随机擦除一些数据点，效果和上述类似 Randomly selects a rectangle region in an image and erases its pixels.
 #if opt.erasing_p>0:
 #    transform_train_list = transform_train_list +  [RandomErasing(probability = opt.erasing_p, mean=[0.0, 0.0, 0.0])]
 #################################################################
 opt = parser.parse_args()
 
+MODELPATH = 'model\\three_view\\'+'net_%03d.pth'%(opt.start)
+
 if opt.resume:
     model, opt, start_epoch = load_network(opt.name, opt)
 else:
-    start_epoch = 0
+    start_epoch = opt.start
 
 
 fp16 = opt.fp16
@@ -148,19 +151,19 @@ y_err['train'] = []
 y_err['val'] = []
 groundFeaturePath = "train_log/groundFeature.txt"
 gr = open(groundFeaturePath,'w')
-def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_epochs=25):
+def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_epochs=50):
     #train_model(model, FeaturesLoss, UncertaintyLoss, optimizer_ft, exp_lr_scheduler,num_epochs=EPOCH)
     since = time.time()
 
     #best_model_wts = model.state_dict()
     #best_acc = 0.0
-    #warm_up = 0.1 # We start from the 0.1*lrRate
+    warm_up = 0.1 # We start from the 0.1*lrRate
     #warm_iteration = round(dataset_sizes['satellite']/opt.batch_size)*opt.warm_epoch # first 5 epoch
     model.train(True)  # Set model to training mod
     model.to(device)
     
     # zero the parameter gradients
-    for epoch in range(num_epochs-start_epoch):
+    for epoch in range(start_epoch,num_epochs):
         ######################################################################
         # Load Data
         # ---------
@@ -174,7 +177,6 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
         filepath = 'train_log/train_log'+str(epoch)+'.txt'
         logfile = open(filepath, "w")   
         
-        epoch = epoch + start_epoch
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
         print('-' * 10)
         print('-' * 10,file=logfile)
@@ -270,10 +272,14 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             optimizer.zero_grad()
             if uncertainty_loss < opt.loss_lamda :
                 runcertainty_loss = opt.loss_lamda - uncertainty_loss
-                feature_loss = feature_loss + uncertainty_loss
+                feature_loss = feature_loss + runcertainty_loss
    
-
-            feature_loss.backward()
+            if fp16: # we use optimier to backward loss
+                with amp.scale_loss(feature_loss, optimizer) as scaled_loss:
+                    scaled_loss.backward()
+            else:
+                feature_loss.backward()
+                
             optimizer.step()
             
             
@@ -285,10 +291,10 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
        #         break
        # if feature_loss > 150:
        #     break
-        save_network(model, opt.name, epoch)
         logfile.close()
         scheduler.step()
         time_elapsed = time.time() - since
+        save_network(model, opt.name, epoch + 1)
         print('Training complete in .%0fm :%.0fs : avgDroneSatLoss:%.05f | avgDroneGroLoss:%.05f'%(
             time_elapsed // 60, time_elapsed % 60, totalDs/len(train_loader), totalGD/len(train_loader)))
         print()
@@ -381,3 +387,5 @@ if __name__ == '__main__':
     #model.change()
     #save_network(model,'Unive1652',0)
     model = train_model(model, FeaturesLoss, UncertaintyLoss, optimizer_ft, exp_lr_scheduler,num_epochs=EPOCH)
+
+    save_network(model, opt.name, 101)

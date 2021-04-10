@@ -137,9 +137,6 @@ def getdatasets(opt):
             anfolder_name = folder_name
             anfolder_root = opt.data_dir + target_drone + '/' + anfolder_name
             continue
-        
-        if fi >450:
-            break
         folder_root = opt.data_dir + target_drone + '/' + folder_name
         if not os.path.isdir(folder_root):
             continue

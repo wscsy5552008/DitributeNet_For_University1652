@@ -10,7 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 import numpy as np
-
+from apex import amp
 class ResBlock(nn.Module):
     def __init__(self, in_channel, out_channel, stride = 1):
         super(ResBlock, self).__init__()
@@ -127,6 +127,8 @@ class DisBlock(nn.Module):
             randomgauss = torch.from_numpy(randomgauss)
             if self.use_gpu== True :
                 randomgauss = randomgauss.to("cuda")
+                if randomgauss.dtype != dis.dtype:
+                    randomgauss = randomgauss.to(dis.dtype)
             #e mult dis
             distribution =dis * randomgauss
             #dis plus avg
