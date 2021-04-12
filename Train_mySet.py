@@ -98,14 +98,14 @@ parser.add_argument('--color_jitter', action='store_true', help='use color jitte
 #    transform_train_list = [transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0)] + transform_train_list
 #    transform_satellite_list = [transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0)] + transform_satellite_list
 parser.add_argument('--erasing_p', default=0, type=float, help='Random Erasing probability, in [0,1]')
-parser.add_argument('--start', default=20, type=int, help='the first K epoch that needs warm up')
+parser.add_argument('--start', default=0, type=int, help='the first K epoch that needs warm up')
 #随机擦除一些数据点，效果和上述类似 Randomly selects a rectangle region in an image and erases its pixels.
 #if opt.erasing_p>0:
 #    transform_train_list = transform_train_list +  [RandomErasing(probability = opt.erasing_p, mean=[0.0, 0.0, 0.0])]
 #################################################################
 opt = parser.parse_args()
 
-MODELPATH = 'model\\three_view\\'+'net_%03d.pth'%(opt.start)
+MODELPATH = 'model\\Unive1652\\\origin.pth'
 
 if opt.resume:
     model, opt, start_epoch = load_network(opt.name, opt)
@@ -230,13 +230,13 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
                         mnegative=sr2[0],snegative=sr2[2])
             DSLoss = DSLoss + feature_loss_ds1
             
-            #1 ground and drone. drone detach?No
+            #1 ground and satellite. drone detach?No
             
-            #feature_loss_gs1 =  FeaturesLoss(
-            #            manchor=gr1[0],sanchor=gr1[2],
-            #            mpositive=dr1[0],spositvie=dr1[0],
-            #           mnegative=dr2[0],snegative=sr2[2])
-            #GDLoss = GDLoss + feature_loss_gs1
+            feature_loss_gs1 =  FeaturesLoss(
+                        manchor=gr1[0],sanchor=gr1[2],
+                        mpositive=sr1[0],spositvie=sr1[0],
+                       mnegative=sr2[0],snegative=sr2[2])
+            GDLoss = GDLoss + feature_loss_gs1
             
             #2 drone and satellite
             feature_loss_ds2 =  FeaturesLoss(
@@ -246,15 +246,15 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             DSLoss = DSLoss + feature_loss_ds2
             
             
-            #2 ground and drone
-            #feature_loss_gs2 =  FeaturesLoss(
-            #            manchor=gr2[0],sanchor=gr2[2],
-            #            mpositive=dr2[0],spositvie=dr2[0],
-            #            mnegative=dr1[0],snegative=sr2[2])
-            #GDLoss = GDLoss + feature_loss_gs2
+            #2 ground and satellite
+            feature_loss_gs2 =  FeaturesLoss(
+                        manchor=gr2[0],sanchor=gr2[2],
+                        mpositive=sr2[0],spositvie=sr2[0],
+                        mnegative=sr1[0],snegative=sr2[2])
+            GDLoss = GDLoss + feature_loss_gs2
 
             totalDs += DSLoss
-            #totalGD += GDLoss
+            totalGD += GDLoss
             feature_loss = DSLoss #+ GDLoss
 
             uncertainty_loss = 0.0
@@ -294,7 +294,8 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
         logfile.close()
         scheduler.step()
         time_elapsed = time.time() - since
-        save_network(model, opt.name, epoch + 1)
+        if epoch%5 == 1:
+            save_network(model, opt.name, epoch + 1)
         print('Training complete in .%0fm :%.0fs : avgDroneSatLoss:%.05f | avgDroneGroLoss:%.05f'%(
             time_elapsed // 60, time_elapsed % 60, totalDs/len(train_loader), totalGD/len(train_loader)))
         print()
@@ -388,4 +389,4 @@ if __name__ == '__main__':
     #save_network(model,'Unive1652',0)
     model = train_model(model, FeaturesLoss, UncertaintyLoss, optimizer_ft, exp_lr_scheduler,num_epochs=EPOCH)
 
-    save_network(model, opt.name, 101)
+    save_network(model, opt.name, 200)

@@ -12,7 +12,7 @@ import faiss
 import torch
 from Data_presolveing import getsatedatasets, getgrounddatasets, getdronedatasets
 version =  torch.__version__
-MODELPATH = "model/three_view/net_023.pth"
+MODELPATH = "C:\\Users\\Jinda\\Desktop\\Distribu2021\\DitributeNet_For_University1652\\model\\trained\\net_101.pth"
 load = False
 def test(model):
     if load == False:
@@ -67,11 +67,11 @@ def test(model):
         for ii,j in enumerate(index):
             print('groundFolder:%s |TargetFolde:%s | Loss:%f'%(gfolder,slabelsets[j],D[i][ii]),file=test_logfile)
             if slabelsets[j] == gfolder:
-                if j==0:
+                if ii==0:
                     top_one+=1
-                if j<3:
+                if ii<3:
                     top_three+=1
-                if j<5:
+                if ii<5:
                     top_five+=1
 
                 top_ten+=1

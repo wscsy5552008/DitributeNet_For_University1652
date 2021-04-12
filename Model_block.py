@@ -10,7 +10,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 import numpy as np
-from apex import amp
+try:
+    from apex import amp
+except ImportError: # will be 3.x series
+    print("no apex here~")
+
 class ResBlock(nn.Module):
     def __init__(self, in_channel, out_channel, stride = 1):
         super(ResBlock, self).__init__()

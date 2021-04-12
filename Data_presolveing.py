@@ -21,6 +21,7 @@ target_satellite = 'data/train/satellite'
 #target_root = 'data/train/google'
 
 target_test_satellite = '../data/test/gallery_satellite'
+target_test_drone = '../data/test/gallery_drone'
 target_test_ground = '../data/test/gallery_street'
 
 def pad(inp, pad = 3):
@@ -37,7 +38,7 @@ def getgrounddatasets(model):
     return gettestdatasets(model,target_test_ground,'ground')
 
 def getdronedatasets(model):
-    return gettestdatasets(model,target_test_satellite,'drone')
+    return gettestdatasets(model,target_test_drone,'drone')
     
     
 def gettestdatasets(model,path,view):
@@ -55,9 +56,8 @@ def gettestdatasets(model,path,view):
     label = []
     total = len(os.listdir(path))
     foldeList =os.listdir(path)
-    random.shuffle(foldeList)
+    #random.shuffle(foldeList)
     for fi,folder_name in enumerate(foldeList,0):
-        print("processing: %d/%d"%(fi,total))
         if fi >100:
             break
       
@@ -71,15 +71,21 @@ def gettestdatasets(model,path,view):
         #读取图片
         sate_view = Image.open(img_path)          
         sate_view = sate_view.convert('RGB')
-        sate_tensor = transform1(sate_view)
-        
+        if fi%2 == 0:
+            sate_tensor = transform1(sate_view)
+            folder_one = folder_name
+            continue
+        else :
+            sate_tensor = torch.cat( (sate_tensor.unsqueeze(0),transform1(sate_view).unsqueeze(0)),0 )     
+           
+        print("processing: %d/%d"%(fi,total))
         with torch.no_grad():
             if view=='ground':
-                sr,gr,dr = model(ground = sate_tensor.unsqueeze(0))
+                sr,gr,dr = model(ground = sate_tensor)
             elif view=='satellite':
-                sr,gr,dr = model(satellite = sate_tensor.unsqueeze(0))
+                sr,gr,dr = model(satellite = sate_tensor)
             elif view=='drone':
-                sr,gr,dr = model(drone = sate_tensor.unsqueeze(0))
+                sr,gr,dr = model(drone = sate_tensor)
                 
         #print(len(result))
         #if isinstance(model, three_view_net):
@@ -99,8 +105,10 @@ def gettestdatasets(model,path,view):
         elif view=='drone':
             result = dr[0]
         #    result = [0]
+        label.append(folder_one)
         label.append(folder_name)
-        datasets.append(result.squeeze(0).numpy())
+        datasets.append(result[0].numpy())
+        datasets.append(result[1].numpy())
             
     return np.array(label),np.array(datasets)
             
