@@ -56,6 +56,7 @@ class DisBlock(nn.Module):
         self.use_gpu = use_gpu
         self.inchannel = in_channel
         self.num_samples = num_samples
+        self.softmax = nn.Softmax(dim=0)
         
         #define network
         '''
@@ -106,7 +107,7 @@ class DisBlock(nn.Module):
         disx = Variable(x.detach()) 
         dis = self.disLayer(disx)
         dis = dis.mean([-2,-1])
-        
+        dis = self.softmax(dis)
         samples = self.getSamples(avg,dis)
         
         return avg,dis,samples

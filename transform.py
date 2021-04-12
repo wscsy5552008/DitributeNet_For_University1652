@@ -7,6 +7,8 @@ import math
 
 target_satellite = '../data/train/satellite'
 target_test_satellite = '../data/test/gallery_satellite'
+polar_test_satellite = '../data/test/gallery_polar_satellite'
+polar_satellite = '../data/train/polar_satellite'
 
 class Conversion:
     def __init__(self,T_x ,T_y ,x_0 ,y_0 ,d_thita ,d_r,):
@@ -79,15 +81,18 @@ img  = Conversion(T_x ,T_y ,x_0 ,y_0 ,d_thita ,d_r)
 #        for w in range(T_x):
 #            result[w][h][i] = tmp[w][h]
 
-foldeList =os.listdir(target_test_satellite)
+foldeList =os.listdir(target_satellite)
 for folder_name in foldeList:
-    
-    img_path = target_test_satellite + '/' + folder_name + '/' + os.listdir( target_test_satellite + '/' +folder_name)[0]
-    print('processing: ' + folder_name + '/' + os.listdir(target_test_satellite + '/' +folder_name)[0] )
+    fileName = os.listdir( target_satellite + '/' +folder_name)[1]
+    img_path = target_satellite + '/' + folder_name + '/' + fileName
+    print('processing: ' + folder_name + '/' + fileName)
     sate_view = Image.open(img_path)          
-    sate_view = sate_view.convert('RGB')
-    sate_view = sate_view.resize((H,W))
-    sate_view = np.asarray(sate_view)
-    result = img.cal(sate_view)
-    result = Image.fromarray(np.uint8(result))
-    result.save(target_test_satellite + '/' + folder_name + '/' + 'polar.jpg')
+    #sate_view = sate_view.convert('RGB')
+    #sate_view = sate_view.resize((H,W))
+    #sate_view = np.asarray(sate_view)
+    #result = img.cal(sate_view)
+    #result = Image.fromarray(np.uint8(result))
+    
+    if not os.path.isdir(polar_satellite  + '/' + folder_name):
+        os.mkdir(polar_satellite  + '/' + folder_name)
+    sate_view.save(polar_satellite  + '/' + folder_name + '/' + 'polar.jpg')

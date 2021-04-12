@@ -18,11 +18,13 @@ import show_data
 target_drone = 'data/train/drone'
 target_ground = 'data/train/street'
 target_satellite = 'data/train/satellite'
+target_polar = 'data/train/polar_satellite'
 #target_root = 'data/train/google'
 
 target_test_satellite = '../data/test/gallery_satellite'
 target_test_drone = '../data/test/gallery_drone'
 target_test_ground = '../data/test/gallery_street'
+target_test_polar = '../data/test/gallery_polar_satellite'
 
 def pad(inp, pad = 3):
     #print(inp.size)
@@ -30,6 +32,9 @@ def pad(inp, pad = 3):
     bg = np.zeros((h+2*pad, w+2*pad, len(inp.mode)))
     bg[pad:pad+h, pad:pad+w, :] = inp
     return bg
+
+def getpolarsatedatasets(model):
+    return gettestdatasets(model,target_test_polar,'polar')
 
 def getsatedatasets(model):
     return gettestdatasets(model,target_test_satellite,'satellite')
@@ -80,11 +85,11 @@ def gettestdatasets(model,path,view):
            
         print("processing: %d/%d"%(fi,total))
         with torch.no_grad():
-            if view=='ground':
+            if view =='ground':
                 sr,gr,dr = model(ground = sate_tensor)
-            elif view=='satellite':
+            elif view =='satellite' or view == 'polar':
                 sr,gr,dr = model(satellite = sate_tensor)
-            elif view=='drone':
+            elif view =='drone':
                 sr,gr,dr = model(drone = sate_tensor)
                 
         #print(len(result))
@@ -100,7 +105,7 @@ def gettestdatasets(model,path,view):
             #result = tmp/i
         if view=='ground':
             result = gr[0]
-        elif view=='satellite':
+        elif view=='satellite' or view == 'polar':
             result = sr[0]
         elif view=='drone':
             result = dr[0]
@@ -148,9 +153,10 @@ def getdatasets(opt):
         folder_root = opt.data_dir + target_drone + '/' + folder_name
         if not os.path.isdir(folder_root):
             continue
-        
+        if fi >=400:
+            break
         #satelite item count
-        satlist = os.listdir(opt.data_dir + target_satellite + '/' + folder_name)
+        satlist = os.listdir(opt.data_dir + target_polar + '/' + folder_name)
         slen = len(satlist)
         #gound item count
         grolist = os.listdir(opt.data_dir + target_ground + '/' + folder_name)
@@ -158,14 +164,15 @@ def getdatasets(opt):
             
         
         #another satelite item count
-        ansatlist = os.listdir(opt.data_dir + target_satellite + '/' + anfolder_name)
+        ansatlist = os.listdir(opt.data_dir + target_polar + '/' + anfolder_name)
         anslen = len(ansatlist)
         #another gound item count
         angrolist = os.listdir(opt.data_dir + target_ground + '/' + anfolder_name)
         anglen = len(angrolist)
         
         andronelist =  os.listdir(anfolder_root)
-        for i in [53]:
+        for i in [37,42,47,52]:
+            #range(53)
             img_name = os.listdir(folder_root)[i]
             
             #读取drone图片
@@ -174,7 +181,7 @@ def getdatasets(opt):
             drone_tensor = transform1(drone_view)
             
             #get satellite pic
-            satellite_view = Image.open(opt.data_dir + target_satellite + '/' + folder_name+ '/' + satlist[i % slen])          
+            satellite_view = Image.open(opt.data_dir + target_polar + '/' + folder_name+ '/' + satlist[i % slen])          
             satellite_view = satellite_view.convert('RGB')
             satellite_tensor = transform1(satellite_view)
           
@@ -191,7 +198,7 @@ def getdatasets(opt):
             androne_tensor = transform1(androne_view)
             
             #an get satellite pic
-            ansatellite_view = Image.open(opt.data_dir + target_satellite + '/' + anfolder_name+ '/' + ansatlist[i % anslen])          
+            ansatellite_view = Image.open(opt.data_dir + target_polar + '/' + anfolder_name+ '/' + ansatlist[i % anslen])          
             ansatellite_view = ansatellite_view.convert('RGB')
             ansatellite_tensor = transform1(ansatellite_view)
           

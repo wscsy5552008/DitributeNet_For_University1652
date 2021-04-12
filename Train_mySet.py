@@ -53,7 +53,7 @@ parser.add_argument('--extra_Google', action='store_true', help='using extra noi
 parser.add_argument('--views', default=3, type=int, help='the number of views')
 parser.add_argument('--share', action='store_true', help='share weight between different view' )
 parser.add_argument('--fp16', action='store_true', help='use float16 instead of float32, which will save about 50% memory' )
-parser.add_argument('--batch_size', default=8, type=int, help='batchsize')
+parser.add_argument('--batch_size', default=2, type=int, help='batchsize')
 parser.add_argument('--stride', default=2, type=int, help='stride')
 parser.add_argument('--pad', default=10, type=int, help='padding')
 parser.add_argument('--pool',default='avg', type=str, help='pool avg')
@@ -255,7 +255,7 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
 
             totalDs += DSLoss
             totalGD += GDLoss
-            feature_loss = DSLoss #+ GDLoss
+            feature_loss = DSLoss + GDLoss
 
             uncertainty_loss = 0.0
             for item in result1:
