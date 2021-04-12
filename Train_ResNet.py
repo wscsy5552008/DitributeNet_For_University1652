@@ -143,7 +143,7 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
 
         model.train(True)  # Set model to training mode
 
-        index=0;
+        index=0
         # Iterate over data.
         for index,items in enumerate(train_loader,0) :
             g1,d1,s1,g2,d2,s2 = items

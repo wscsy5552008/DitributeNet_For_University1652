@@ -6,7 +6,9 @@ Created on Sun Mar 21 13:59:30 2021
 """
 
 #set hyperparameter
-EPOCH = 50
+times = 0
+MINI = 50
+EPOCH = 20 * 14#700/MINI
 BATCH_SIZE = 50
 LR = 0.01
 K=10

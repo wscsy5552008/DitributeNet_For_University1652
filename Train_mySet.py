@@ -33,7 +33,7 @@ except ImportError: # will be 3.x series
 #MODELPATH = "C:\\Users\\Jinda\\Desktop\\源代码\\university1652-model\\three_view_long_share_d0.75_256_s1_google\\net_119.pth"
 from Model_distributeNet import three_view_net
 from LossFunc_lossCalc import FeaturesLoss,TripletUncertaintyLoss
-from Par_train import EPOCH, USE_GPU
+from Par_train import EPOCH, USE_GPU, MINI
 import Par_train as para
 from Data_presolveing import getdatasets
 from utils import load_network, save_network
@@ -170,6 +170,9 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
         #
         trainImgSet = None
         trainImgSet = getdatasets(opt)
+        if len(trainImgSet) < MINI:
+            trainImgSet = getdatasets(opt)
+
         train_loader = DataLoader(dataset=trainImgSet,batch_size=opt.batch_size ,shuffle=False)
         
         totalDs = 0.0
@@ -269,7 +272,6 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
                 feature_loss *= warm_up
                 uncertainty_loss *= warm_up
 
-            optimizer.zero_grad()
             if uncertainty_loss < opt.loss_lamda :
                 runcertainty_loss = opt.loss_lamda - uncertainty_loss
                 feature_loss = feature_loss + runcertainty_loss
@@ -281,6 +283,7 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
                 feature_loss.backward()
                 
             optimizer.step()
+            optimizer.zero_grad()
             
             
             print('[epoch:%d, iter:%d/%d] feature_loss DS: %8.05f | feature_loss GD: %8.05f | unsertainty-Loss: %.05f ' 
@@ -294,7 +297,7 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
         logfile.close()
         scheduler.step()
         time_elapsed = time.time() - since
-        if epoch%5 == 1:
+        if epoch%5 == 0:
             save_network(model, opt.name, epoch + 1)
         print('Training complete in .%0fm :%.0fs : avgDroneSatLoss:%.05f | avgDroneGroLoss:%.05f'%(
             time_elapsed // 60, time_elapsed % 60, totalDs/len(train_loader), totalGD/len(train_loader)))

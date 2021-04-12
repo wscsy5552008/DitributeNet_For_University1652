@@ -14,6 +14,8 @@ import random
 from utils_from_others.autoaugment import ImageNetPolicy
 from utils_from_others.random_erasing import RandomErasing
 import Par_train as para
+import Par_train 
+from Par_train import MINI,times
 import show_data
 target_drone = 'data/train/drone'
 target_ground = 'data/train/street'
@@ -128,6 +130,15 @@ def getdatasets(opt):
         ]
         )
         
+    transformpolar = transforms.Compose([
+        transforms.CenterCrop((opt.h, opt.w*4)), # 只能对PIL图片进行裁剪
+        transforms.Pad( opt.pad, padding_mode='edge'),
+        transforms.RandomCrop((opt.h, opt.w*4)),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ]
+        )
     if opt.erasing_p>0:
         transform1 = transform1 +  [RandomErasing(probability = opt.erasing_p, mean=[0.0, 0.0, 0.0])]
 
@@ -138,10 +149,18 @@ def getdatasets(opt):
     if opt.DA:
         transform1 = [ImageNetPolicy()] + transform1
 
+
     datasets = []
     
-    foldeList =os.listdir(opt.data_dir + target_drone)
-    random.shuffle(foldeList)
+    Par_train.times +=1
+    if Par_train.times == 1:
+        foldeList =os.listdir(opt.data_dir + target_drone)
+        random.shuffle(foldeList)
+    elif Par_train.times  * MINI > 700:
+        Par_train.times = 1
+        foldeList =os.listdir(opt.data_dir + target_drone)
+        random.shuffle(foldeList)
+
     for fi,folder_name in enumerate(foldeList,0):
         if fi% 10 == 0 :
             print('………………reading………………:%d/%d'%(fi,len(os.listdir(opt.data_dir + target_drone))))
@@ -153,7 +172,7 @@ def getdatasets(opt):
         folder_root = opt.data_dir + target_drone + '/' + folder_name
         if not os.path.isdir(folder_root):
             continue
-        if fi >=400:
+        if fi >=MINI:
             break
         #satelite item count
         satlist = os.listdir(opt.data_dir + target_polar + '/' + folder_name)
@@ -171,7 +190,7 @@ def getdatasets(opt):
         anglen = len(angrolist)
         
         andronelist =  os.listdir(anfolder_root)
-        for i in [37,42,47,52]:
+        for x,i in enumerate([37,42,47,52],0):
             #range(53)
             img_name = os.listdir(folder_root)[i]
             
@@ -181,12 +200,12 @@ def getdatasets(opt):
             drone_tensor = transform1(drone_view)
             
             #get satellite pic
-            satellite_view = Image.open(opt.data_dir + target_polar + '/' + folder_name+ '/' + satlist[i % slen])          
+            satellite_view = Image.open(opt.data_dir + target_polar + '/' + folder_name+ '/' + satlist[x % slen])          
             satellite_view = satellite_view.convert('RGB')
-            satellite_tensor = transform1(satellite_view)
+            satellite_tensor = transformpolar(satellite_view)
           
             #get ground pic
-            ground_view = Image.open(opt.data_dir + target_ground + '/' + folder_name + '/' + grolist[i % glen])          
+            ground_view = Image.open(opt.data_dir + target_ground + '/' + folder_name + '/' + grolist[x % glen])          
             ground_view = ground_view.convert('RGB')
             ground_tensor = transform1(ground_view)
             
@@ -198,12 +217,12 @@ def getdatasets(opt):
             androne_tensor = transform1(androne_view)
             
             #an get satellite pic
-            ansatellite_view = Image.open(opt.data_dir + target_polar + '/' + anfolder_name+ '/' + ansatlist[i % anslen])          
+            ansatellite_view = Image.open(opt.data_dir + target_polar + '/' + anfolder_name+ '/' + ansatlist[x % anslen])          
             ansatellite_view = ansatellite_view.convert('RGB')
-            ansatellite_tensor = transform1(ansatellite_view)
+            ansatellite_tensor = transformpolar(ansatellite_view)
           
             #an get ground pic
-            anground_view = Image.open(opt.data_dir + target_ground + '/' + anfolder_name + '/' + angrolist[i % anglen])          
+            anground_view = Image.open(opt.data_dir + target_ground + '/' + anfolder_name + '/' + angrolist[x % anglen])          
             anground_view = anground_view.convert('RGB')
             anground_tensor = transform1(anground_view)
             
