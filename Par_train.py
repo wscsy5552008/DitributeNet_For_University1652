@@ -6,7 +6,8 @@ Created on Sun Mar 21 13:59:30 2021
 """
 
 #set hyperparameter
-IS_DIS_Net = False
+foldeList=None 
+IS_DIS_Net = True
 times = 0
 MINI = 50
 EPOCH = 20 * 14#700/MINI

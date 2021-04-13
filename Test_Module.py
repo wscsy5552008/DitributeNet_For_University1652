@@ -5,15 +5,15 @@ Created on Fri Apr  2 16:25:04 2021
 @author: Jinda
 """
 
-from Par_train import IS_DIS_Net
 from __future__ import print_function, division
+from Par_train import IS_DIS_Net
 from Model_distributeNet import three_view_net, three_view_resNet
 import numpy as np
 import faiss
 import torch
 from Data_presolveing import getsatedatasets, getgrounddatasets, getdronedatasets
 version =  torch.__version__
-MODELPATH = "\\model\\three_view\\net_001.pth"
+MODELPATH = "./model/three_view/net_001.pth"
 load = False
 def test(model):
     if load == False:

@@ -28,7 +28,6 @@ target_test_satellite = '../data/test/gallery_satellite'
 target_test_drone = '../data/test/gallery_drone'
 target_test_ground = '../data/test/gallery_street'
 target_test_polar = '../data/test/gallery_polar_satellite'
-foldeList =os.listdir('../' + target_drone)
 def pad(inp, pad = 3):
     #print(inp.size)
     h, w = inp.size
@@ -166,14 +165,14 @@ def getdatasets(opt):
     
     Par_train.times +=1
     if Par_train.times == 1:
-        foldeList =os.listdir(opt.data_dir + target_drone)
-        random.shuffle(foldeList)
+        Par_train.foldeList =os.listdir(opt.data_dir + target_drone)
+        random.shuffle(Par_train.foldeList)
     elif Par_train.times  * MINI > 700:
         Par_train.times = 1
-        foldeList =os.listdir(opt.data_dir + target_drone)
-        random.shuffle(foldeList)
+        Par_train.foldeList =os.listdir(opt.data_dir + target_drone)
+        random.shuffle(Par_train.foldeList)
 
-    for fi,folder_name in enumerate(foldeList,0):
+    for fi,folder_name in enumerate(Par_train.foldeList,0):
         if fi% 10 == 0 :
             print('………………reading………………:%d/%d'%(fi,len(os.listdir(opt.data_dir + target_drone))))
     
