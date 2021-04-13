@@ -31,9 +31,9 @@ except ImportError: # will be 3.x series
     print('This is not an error. If you want to use low precision, i.e., fp16, please install the apex with cuda support (https://github.com/NVIDIA/apex) and update pytorch to 1.0')
 
 #MODELPATH = "C:\\Users\\Jinda\\Desktop\\源代码\\university1652-model\\three_view_long_share_d0.75_256_s1_google\\net_119.pth"
-from Model_distributeNet import three_view_net
-from LossFunc_lossCalc import FeaturesLoss,TripletUncertaintyLoss
-from Par_train import EPOCH, USE_GPU, MINI
+from Model_distributeNet import three_view_net,three_view_resNet
+from LossFunc_lossCalc import FeaturesLoss,TripletUncertaintyLoss,FeaturesLossWithoutSample
+from Par_train import EPOCH, USE_GPU, MINI, IS_DIS_Net
 import Par_train as para
 from Data_presolveing import getdatasets
 from utils import load_network, save_network
@@ -105,7 +105,7 @@ parser.add_argument('--start', default=0, type=int, help='the first K epoch that
 #################################################################
 opt = parser.parse_args()
 
-MODELPATH = 'model\\Unive1652\\\origin.pth'
+MODELPATH = 'model\\Unive1652\\net_res_preTrain.pth'
 
 if opt.resume:
     model, opt, start_epoch = load_network(opt.name, opt)
@@ -151,7 +151,7 @@ y_err['train'] = []
 y_err['val'] = []
 groundFeaturePath = "train_log/groundFeature.txt"
 gr = open(groundFeaturePath,'w')
-def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_epochs=50):
+def train_model(model, optimizer, scheduler, num_epochs=50):
     #train_model(model, FeaturesLoss, UncertaintyLoss, optimizer_ft, exp_lr_scheduler,num_epochs=EPOCH)
     since = time.time()
 
@@ -177,7 +177,11 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
         
         totalDs = 0.0
         totalGD = 0.0
-        filepath = 'train_log/train_log'+str(epoch)+'.txt'
+        if IS_DIS_Net:
+            filepath = 'train_log/dis_train_log'+str(epoch)+'.txt'
+        else:
+            filepath = 'train_log/res_train_log'+str(epoch)+'.txt'
+
         logfile = open(filepath, "w")   
         
         print('Epoch {}/{}'.format(epoch, num_epochs - 1))
@@ -223,59 +227,103 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             #print(result[0])
             #print(result[3])
             #print('-'*20)
-            sr1,gr1,dr1 = result1
-            sr2,gr2,dr2 = result2
-            
-            #1 drone and satellite
-            feature_loss_ds1 =  FeaturesLoss(
-                        manchor=dr1[0],sanchor=dr1[2],
-                        mpositive=sr1[0],spositvie=sr1[2],
+            if IS_DIS_Net:
+                sr1,gr1,dr1 = result1
+                sr2,gr2,dr2 = result2
+                
+                #1 drone and satellite
+                feature_loss_ds1 =  FeaturesLoss(
+                            manchor=dr1[0],sanchor=dr1[2],
+                            mpositive=sr1[0],spositvie=sr1[2],
+                            mnegative=sr2[0],snegative=sr2[2])
+                DSLoss = DSLoss + feature_loss_ds1
+                
+                #1 ground and satellite. drone detach?No
+                
+                feature_loss_gs1 =  FeaturesLoss(
+                            manchor=gr1[0],sanchor=gr1[2],
+                            mpositive=sr1[0],spositvie=sr1[0],
                         mnegative=sr2[0],snegative=sr2[2])
-            DSLoss = DSLoss + feature_loss_ds1
-            
-            #1 ground and satellite. drone detach?No
-            
-            feature_loss_gs1 =  FeaturesLoss(
-                        manchor=gr1[0],sanchor=gr1[2],
-                        mpositive=sr1[0],spositvie=sr1[0],
-                       mnegative=sr2[0],snegative=sr2[2])
-            GDLoss = GDLoss + feature_loss_gs1
-            
-            #2 drone and satellite
-            feature_loss_ds2 =  FeaturesLoss(
-                        manchor=dr2[0],sanchor=dr2[2],
-                        mpositive=sr2[0],spositvie=sr2[2],
-                        mnegative=sr1[0],snegative=sr2[2])
-            DSLoss = DSLoss + feature_loss_ds2
-            
-            
-            #2 ground and satellite
-            feature_loss_gs2 =  FeaturesLoss(
-                        manchor=gr2[0],sanchor=gr2[2],
-                        mpositive=sr2[0],spositvie=sr2[0],
-                        mnegative=sr1[0],snegative=sr2[2])
-            GDLoss = GDLoss + feature_loss_gs2
+                GDLoss = GDLoss + feature_loss_gs1
+                
+                #2 drone and satellite
+                feature_loss_ds2 =  FeaturesLoss(
+                            manchor=dr2[0],sanchor=dr2[2],
+                            mpositive=sr2[0],spositvie=sr2[2],
+                            mnegative=sr1[0],snegative=sr2[2])
+                DSLoss = DSLoss + feature_loss_ds2
+                
+                
+                #2 ground and satellite
+                feature_loss_gs2 =  FeaturesLoss(
+                            manchor=gr2[0],sanchor=gr2[2],
+                            mpositive=sr2[0],spositvie=sr2[0],
+                            mnegative=sr1[0],snegative=sr2[2])
+                GDLoss = GDLoss + feature_loss_gs2
 
-            totalDs += DSLoss
-            totalGD += GDLoss
-            feature_loss = DSLoss + GDLoss
+                totalDs += DSLoss
+                totalGD += GDLoss
+                feature_loss = DSLoss + GDLoss
 
-            uncertainty_loss = 0.0
-            for item in result1:
-                uncertainty_loss = uncertainty_loss +  UncertaintyLoss(disanchor=item[1])
-            for item in result2:
-                uncertainty_loss = uncertainty_loss +  UncertaintyLoss(disanchor=item[1])
+                uncertainty_loss = 0.0
+                for item in result1:
+                    uncertainty_loss = uncertainty_loss +  UncertaintyLoss(disanchor=item[1])
+                for item in result2:
+                    uncertainty_loss = uncertainty_loss +  UncertaintyLoss(disanchor=item[1])
 
-            # backward + optimize only if in training phase
-            if epoch<opt.warm_epoch : 
-                warm_up = min(1.0, warm_up + 0.9 / opt.warm_epoch)
-                feature_loss *= warm_up
-                uncertainty_loss *= warm_up
+                # backward + optimize only if in training phase
+                if epoch<opt.warm_epoch : 
+                    warm_up = min(1.0, warm_up + 0.9 / opt.warm_epoch)
+                    feature_loss *= warm_up
+                    uncertainty_loss *= warm_up
 
-            if uncertainty_loss < opt.loss_lamda :
-                runcertainty_loss = opt.loss_lamda - uncertainty_loss
-                feature_loss = feature_loss + runcertainty_loss
-   
+                if uncertainty_loss < opt.loss_lamda :
+                    runcertainty_loss = opt.loss_lamda - uncertainty_loss
+                    feature_loss = feature_loss + runcertainty_loss
+            else :
+                
+                sr1,gr1,dr1 = result1
+                sr2,gr2,dr2 = result2
+                
+                #1 drone and satellite
+                feature_loss_ds1 =  FeaturesLossWithoutSample(
+                            manchor=dr1,
+                            mpositive=sr1,
+                            mnegative=sr2)
+                DSLoss = DSLoss + feature_loss_ds1
+                
+                #1 ground and satellite. drone detach?No
+                
+                feature_loss_gs1 =  FeaturesLossWithoutSample(
+                            manchor=gr1,
+                            mpositive=sr1,
+                            mnegative=sr2)
+                GDLoss = GDLoss + feature_loss_gs1
+                
+                #2 drone and satellite
+                feature_loss_ds2 =  FeaturesLossWithoutSample(
+                            manchor=dr2,
+                            mpositive=sr2,
+                            mnegative=sr1)
+                DSLoss = DSLoss + feature_loss_ds2
+                
+                
+                #2 ground and satellite
+                feature_loss_gs2 =  FeaturesLossWithoutSample(
+                            manchor=gr2,
+                            mpositive=sr2,
+                            mnegative=sr1)
+                GDLoss = GDLoss + feature_loss_gs2
+
+                totalDs += DSLoss
+                totalGD += GDLoss
+                feature_loss = DSLoss + GDLoss
+
+                # backward + optimize only if in training phase
+                if epoch<opt.warm_epoch : 
+                    warm_up = min(1.0, warm_up + 0.9 / opt.warm_epoch)
+                    feature_loss *= warm_up
+
             if fp16: # we use optimier to backward loss
                 with amp.scale_loss(feature_loss, optimizer) as scaled_loss:
                     scaled_loss.backward()
@@ -285,11 +333,17 @@ def train_model(model, FeaturesLoss, UncertaintyLoss, optimizer, scheduler, num_
             optimizer.step()
             optimizer.zero_grad()
             
-            
-            print('[epoch:%d, iter:%d/%d] feature_loss DS: %8.05f | feature_loss GD: %8.05f | unsertainty-Loss: %.05f ' 
+            if IS_DIS_Net:
+                print('[epoch:%d, iter:%d/%d] feature_loss DS: %8.05f | feature_loss GD: %8.05f | unsertainty-Loss: %.05f ' 
                           % (epoch + 1, index, len(train_loader) , DSLoss,GDLoss,uncertainty_loss ))
-            print('[epoch:%d, iter:%d/%d] feature_loss DS: %8.05f | feature_loss GD: %8.05f | unsertainty-Loss: %.05f ' 
+                print('[epoch:%d, iter:%d/%d] feature_loss DS: %8.05f | feature_loss GD: %8.05f | unsertainty-Loss: %.05f ' 
                           % (epoch + 1, index, len(train_loader) , DSLoss,GDLoss,uncertainty_loss ),file=logfile)
+            else:
+                print('[epoch:%d, iter:%d/%d] feature_loss DS: %8.05f | feature_loss GD: %8.05f ' 
+                          % (epoch + 1, index, len(train_loader) , DSLoss,GDLoss))
+                print('[epoch:%d, iter:%d/%d] feature_loss DS: %8.05f | feature_loss GD: %8.05f' 
+                          % (epoch + 1, index, len(train_loader) , DSLoss,GDLoss),file=logfile)
+    
        #     if feature_loss > 150:
        #         break
        # if feature_loss > 150:
@@ -339,21 +393,26 @@ if __name__ == '__main__':
     #
 
     #model = three_view_net(use_gpu=use_gpu).to(device)
-    model = three_view_net(use_gpu=use_gpu).to(device)
+    if IS_DIS_Net:
+        model = three_view_net(use_gpu=use_gpu).to(device)
+    else :
+        model = three_view_resNet(use_gpu=use_gpu).to(device)
     model.load_state_dict(torch.load(MODELPATH))
 
     # For resume:
     if start_epoch>=40:
         opt.lr = opt.lr*0.1
-
-    ignored_params = list(map(id, model.disblock_1.parameters() )) + list(map(id, model.disblock_2.parameters() ))
-    base_params = filter(lambda p: id(p) not in ignored_params, model.parameters())
-    optimizer_ft = optim.SGD([
-                {'params': base_params, 'lr': 0.1*opt.lr},
-                {'params': model.disblock_1.parameters(), 'lr': opt.lr},
-                {'params': model.disblock_2.parameters(), 'lr': opt.lr}
-            ], weight_decay=5e-4, momentum=0.9, nesterov=True)
-    
+    if IS_DIS_Net:
+        ignored_params = list(map(id, model.disblock_1.parameters() )) + list(map(id, model.disblock_2.parameters() ))
+        base_params = filter(lambda p: id(p) not in ignored_params, model.parameters())
+        optimizer_ft = optim.SGD([
+                    {'params': base_params, 'lr': 0.1*opt.lr},
+                    {'params': model.disblock_1.parameters(), 'lr': opt.lr},
+                    {'params': model.disblock_2.parameters(), 'lr': opt.lr}
+                ], weight_decay=5e-4, momentum=0.9, nesterov=True)
+    else:
+        optimizer_ft = optim.SGD(params=model.parameters(),lr=opt.lr, weight_decay=5e-4, momentum=0.9, nesterov=True)
+        
     #ignored_params = list(map(id, model.classifier.parameters() )) #返回一串parameters的标识符， 因为classifier层是被忽略的，所以这里是ignore
     #base_params = filter(lambda p: id(p) not in ignored_params, model.parameters())#过滤掉这些元素，这其实可以直接拿来用，因为我也不需要这里的classsifier
     #optimizer_ft = optim.SGD([
@@ -369,10 +428,9 @@ if __name__ == '__main__':
     # Train and evaluate
     # ^^^^^^^^^^^^^^^^^^
     #
-    # It should take around 1-2 hours on GPU. 
     #
-    dir_name = os.path.join('./model',opt.name)
 
+    dir_name = os.path.join('./model',opt.name)
 
     UncertaintyLoss = TripletUncertaintyLoss(use_gpu)
 
@@ -389,7 +447,7 @@ if __name__ == '__main__':
     #o = open("wight2.txt","w")
     #print(model.state_dict(),file=o)
     #model.change()
-    #save_network(model,'Unive1652',0)
-    model = train_model(model, FeaturesLoss, UncertaintyLoss, optimizer_ft, exp_lr_scheduler,num_epochs=EPOCH)
+    #save_network(model,'Unive1652',101)
+    model = train_model(model,  optimizer_ft, exp_lr_scheduler,num_epochs=EPOCH)
 
     save_network(model, opt.name, 200)

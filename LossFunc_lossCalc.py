@@ -145,7 +145,7 @@ def FeaturesLoss(manchor,sanchor,mpositive,spositvie,mnegative,snegative,K = 1):
     
 def FeaturesLossWithoutSample(manchor,mpositive,mnegative):
     #anchor -> (mean,[sample])
-    totalLoss = CrossTowviewLoss(manchor, mpositive, 1) + CrossTowviewLoss(manchor, mnegative, 0)
+    totalLoss = TriFrobeniusLoss(manchor,mpositive,mnegative, 0.01) #CrossTowviewLoss(manchor, mpositive, 1) + CrossTowviewLoss(manchor, mnegative, 0)
     return totalLoss
 
 def UncertaintyLoss(disanchor):

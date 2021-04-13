@@ -126,8 +126,8 @@ class three_view_net(nn.Module):
         self.model_2 =  ft_net(class_num, stride = 1,pool = 'avg')
         self.model_3 = self.model_1
         self.classifier = None#ClassBlock(2048, 701, 0.75)
-        self.disblock_1 = DisBlock(in_channel=2048,  out_channel = 2048,num_samples = 20,use_gpu=USE_GPU)
-        self.disblock_2 = DisBlock(in_channel=2048,  out_channel = 2048,num_samples = 20,use_gpu=USE_GPU)
+        self.disblock_1 = DisBlock(in_channel=2048,  out_channel = 2048,num_samples = 10,use_gpu=USE_GPU)
+        self.disblock_2 = DisBlock(in_channel=2048,  out_channel = 2048,num_samples = 10,use_gpu=USE_GPU)
         self.disblock_3 = self.disblock_1
 
 
@@ -138,8 +138,8 @@ class three_view_net(nn.Module):
         #    self.model_2 = dis_net(num_classes = num_classes,use_gpu=use_gpu, preTrain = preTrain,resnetNum = resnetNum)
     def change(self):
         self.classifier = None
-        self.disblock_1 = DisBlock(in_channel=2048, out_channel = 2048,num_samples = 20,use_gpu=USE_GPU)
-        self.disblock_2 = DisBlock(in_channel=2048, out_channel = 2048,num_samples = 20,use_gpu=USE_GPU)
+        self.disblock_1 = DisBlock(in_channel=2048, out_channel = 2048,num_samples = 10,use_gpu=USE_GPU)
+        self.disblock_2 = DisBlock(in_channel=2048, out_channel = 2048,num_samples = 10,use_gpu=USE_GPU)
         self.disblock_3 = self.disblock_1
         
     def forward(self, satellite = None, ground = None,drone = None):
@@ -159,7 +159,32 @@ class three_view_net(nn.Module):
             y3 = self.model_3(drone)
             y3 = self.disblock_3(y3)
         return y1,y2,y3   
-                
+class three_view_resNet(nn.Module):
+    def __init__(self, share = False,class_num = 1024,use_gpu=USE_GPU, preTrain = False,resnetNum = 50):
+        super(three_view_resNet, self).__init__() 
+
+        self.model_1 =  ft_net(class_num, stride = 1,pool = 'avg')
+        self.model_2 =  ft_net(class_num, stride = 1,pool = 'avg')
+        self.model_3 = self.model_1
+        self.classifier = None#ClassBlock(2048, 701, 0.75)
+
+    def change(self):
+        self.classifier = None
+        
+    def forward(self, satellite = None, ground = None,drone = None):
+        if satellite == None:
+            y1 = None
+        else:
+            y1 = self.model_1(satellite)
+        if ground  == None:
+            y2 = None
+        else:
+            y2 = self.model_2(ground)
+        if drone == None:
+            y3 = None
+        else:
+            y3 = self.model_3(drone)
+        return y1,y2,y3                   
         
         
         
