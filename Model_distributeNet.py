@@ -176,14 +176,17 @@ class three_view_resNet(nn.Module):
             y1 = None
         else:
             y1 = self.model_1(satellite)
+            y1 = y1.mean([-2,-1])
         if ground  == None:
             y2 = None
         else:
             y2 = self.model_2(ground)
+            y2 = y2.mean([-2,-1])
         if drone == None:
             y3 = None
         else:
             y3 = self.model_3(drone)
+            y3 = y3.mean([-2,-1])
         return y1,y2,y3                   
         
         

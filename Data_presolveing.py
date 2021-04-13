@@ -4,6 +4,7 @@ Created on Sun Mar 21 13:58:27 2021
 
 @author: Jinda
 """
+from torchvision.transforms.transforms import Resize
 from Model_distributeNet import dis_net as DisNet, three_view_net
 import torch
 import os
@@ -15,7 +16,7 @@ from utils_from_others.autoaugment import ImageNetPolicy
 from utils_from_others.random_erasing import RandomErasing
 import Par_train as para
 import Par_train 
-from Par_train import MINI,times
+from Par_train import IS_DIS_Net, MINI,times
 import show_data
 target_drone = 'data/train/drone'
 target_ground = 'data/train/street'
@@ -27,7 +28,7 @@ target_test_satellite = '../data/test/gallery_satellite'
 target_test_drone = '../data/test/gallery_drone'
 target_test_ground = '../data/test/gallery_street'
 target_test_polar = '../data/test/gallery_polar_satellite'
-
+foldeList =os.listdir('../' + target_drone)
 def pad(inp, pad = 3):
     #print(inp.size)
     h, w = inp.size
@@ -50,15 +51,23 @@ def getdronedatasets(model):
     
 def gettestdatasets(model,path,view):
     
-    transform1 = transforms.Compose([
-        transforms.CenterCrop((para.H,para.W)), # 只能对PIL图片进行裁剪
-        transforms.Pad( 10, padding_mode='edge'),
-        transforms.RandomCrop((para.H,para.W)),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-        ]
-        )
+    if view == 'polar':
+        transform1 = transforms.Compose([
+            transforms.Resize((para.H,para.W*4), interpolation=3), # 只能对PIL图片进行裁剪
+            transforms.Pad( 10, padding_mode='edge'),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+            ]
+            )
+    else :
+        transform1 = transforms.Compose([
+            transforms.Resize((para.H,para.W), interpolation=3), # 只能对PIL图片进行裁剪
+            transforms.Pad( 10, padding_mode='edge'),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+            ]
+            )
+
     datasets = []
     label = []
     total = len(os.listdir(path))
@@ -67,8 +76,6 @@ def gettestdatasets(model,path,view):
     for fi,folder_name in enumerate(foldeList,0):
         if fi >100:
             break
-      
-        
         folder_root = path + '/' + folder_name
         if not os.path.isdir(folder_root):
             continue
@@ -106,11 +113,20 @@ def gettestdatasets(model,path,view):
             #    tmp+=item
             #result = tmp/i
         if view=='ground':
-            result = gr[0]
+            if IS_DIS_Net:
+                result = gr[0]
+            else:
+                result = gr
         elif view=='satellite' or view == 'polar':
-            result = sr[0]
+            if IS_DIS_Net:
+                result = sr[0]
+            else:
+                result = sr
         elif view=='drone':
-            result = dr[0]
+            if IS_DIS_Net:
+                result = dr[0]
+            else:
+                result = dr
         #    result = [0]
         label.append(folder_one)
         label.append(folder_name)
@@ -121,20 +137,16 @@ def gettestdatasets(model,path,view):
             
 def getdatasets(opt):
     transform1 = transforms.Compose([
-        transforms.CenterCrop((opt.h, opt.w)), # 只能对PIL图片进行裁剪
+        transforms.Resize((opt.h, opt.w*4), interpolation=3),  # 只能对PIL图片进行裁剪
         transforms.Pad( opt.pad, padding_mode='edge'),
-        transforms.RandomCrop((opt.h, opt.w)),
-        transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ]
         )
         
     transformpolar = transforms.Compose([
-        transforms.CenterCrop((opt.h, opt.w*4)), # 只能对PIL图片进行裁剪
+        transforms.Resize((opt.h, opt.w*4), interpolation=3), # 只能对PIL图片进行裁剪
         transforms.Pad( opt.pad, padding_mode='edge'),
-        transforms.RandomCrop((opt.h, opt.w*4)),
-        transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ]
