@@ -18,7 +18,7 @@ device = torch.device("cuda")
 #define ResBlock
 
 class dis_net(nn.Module):
-    def __init__(self, num_classes = 1024,use_gpu=USE_GPU, preTrain = False,stride = 1,num_samples = 10,resnetNum = 50):
+    def __init__(self,  preTrain = False,resnetNum = 50):
         super(dis_net, self).__init__() 
 
         if resnetNum == 18:
@@ -30,16 +30,7 @@ class dis_net(nn.Module):
         else:
             print("Error: only support resnet 18/34/50, please varify your settings!")
             exit()
-        # avg pooling to global pooling
-        if stride == 1:
-            self.model.layer4[0].downsample[0].stride = (1,1)
-            self.model.layer4[0].conv2.stride = (1,1)
-        self.model.avgpool2 = nn.AdaptiveAvgPool2d((1,1))
            
-        #    self.model.layer4[0].downsample[0].stride = (1,1)
-        #    self.model.layer4[0].conv2.stride = (1,1)
-        #    self.model.avgpool2 = nn.AdaptiveAvgPool2d((1,1))
-        
         #models.resnet18(pretrained=False)
         #self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
         #                       bias=False)
@@ -62,11 +53,12 @@ class dis_net(nn.Module):
         #  x = self.layer3(x)
         #  x = self.layer4(x)
 
+        #self.dislayer =  DisBlock(in_channel=512, num_classes=num_classes,num_samples = num_samples,use_gpu=use_gpu)
+
         #  x = self.avgpool(x)
         #  x = torch.flatten(x, 1)
         #  x = self.fc(x)
 
-        self.dislayer =  DisBlock(in_channel=512, num_classes=num_classes,num_samples = num_samples,use_gpu=use_gpu)
     
     def forward(self, x):
         #test
@@ -84,11 +76,11 @@ class dis_net(nn.Module):
         if viewMidPic:
             beforel3 = x
         x = self.model.layer3(x)
-        x = self.model.layer4(x)       
+        out = self.model.layer4(x)       
         
         if viewMidPic:
             beforeout = x
-        out = self.dislayer(x)
+        #out = self.dislayer(x)
         #test
         if viewMidPic:
             showMid(oripic[0], outfolder +"/Ori")
@@ -122,6 +114,8 @@ class three_view_net(nn.Module):
     def __init__(self, share = False,class_num = 1024,use_gpu=USE_GPU, preTrain = False,resnetNum = 50):
         super(three_view_net, self).__init__() 
 
+        #self.model_1 =  dis_net( preTrain = False,resnetNum = 50)
+        #self.model_2 =  dis_net( preTrain = False,resnetNum = 50)
         self.model_1 =  ft_net(class_num, stride = 1,pool = 'avg')
         self.model_2 =  ft_net(class_num, stride = 1,pool = 'avg')
         self.model_3 = self.model_1
@@ -160,16 +154,18 @@ class three_view_net(nn.Module):
             y3 = self.disblock_3(y3)
         return y1,y2,y3   
 class three_view_resNet(nn.Module):
-    def __init__(self, share = False,class_num = 1024,use_gpu=USE_GPU, preTrain = False,resnetNum = 50):
+    def __init__(self, preTrain = True,resnetNum = 34):
         super(three_view_resNet, self).__init__() 
 
-        self.model_1 =  ft_net(class_num, stride = 1,pool = 'avg')
-        self.model_2 =  ft_net(class_num, stride = 1,pool = 'avg')
+        #self.model_1 =  dis_net( preTrain = preTrain,resnetNum = resnetNum)
+        #self.model_2 =  dis_net( preTrain = preTrain,resnetNum = resnetNum)
+        self.model_1 =  ft_net(1024, stride = 1,pool = 'avg')
+        self.model_2 =  ft_net(1024, stride = 1,pool = 'avg')
         self.model_3 = self.model_1
         self.classifier = None#ClassBlock(2048, 701, 0.75)
 
-    def change(self):
-        self.classifier = None
+    #def change(self):
+    #    self.classifier = None
         
     def forward(self, satellite = None, ground = None,drone = None):
         if satellite == None:

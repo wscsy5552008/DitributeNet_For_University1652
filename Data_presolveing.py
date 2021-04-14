@@ -15,8 +15,7 @@ import random
 from utils_from_others.autoaugment import ImageNetPolicy
 from utils_from_others.random_erasing import RandomErasing
 import Par_train as para
-import Par_train 
-from Par_train import IS_DIS_Net, MINI,times
+from Par_train import IS_DIS_Net, MINI,times,useNoise,foldeList
 import show_data
 target_drone = 'data/train/drone'
 target_ground = 'data/train/street'
@@ -133,7 +132,27 @@ def gettestdatasets(model,path,view):
         datasets.append(result[1].numpy())
             
     return np.array(label),np.array(datasets)
-            
+
+
+def getnoisearray(path="logfile/NoisePairdrone_2_satellite.txt"):
+    '''
+
+    '''
+    res = []
+    fp = open(path, 'r')
+    try:
+      lines = fp.readlines()#读取出全部数据，按行存储
+    finally:
+      fp.close()
+    for line in lines:
+      dict = []
+      # print line.split() #like['compute21', '2', '4']
+      line_list = line.split() # 默认以空格为分隔符对字符串进行切片
+      dict.append(line_list[0])
+      dict.append(line_list[1])
+      res.append(dict)
+    return res
+
 def getdatasets(opt):
     transform1 = transforms.Compose([
         transforms.Resize((opt.h, opt.w*4), interpolation=3),  # 只能对PIL图片进行裁剪
@@ -150,6 +169,11 @@ def getdatasets(opt):
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ]
         )
+    #noisearray[noisei][0],二元组数组，noisei是下标，
+    noisearray = getnoisearray()
+    noiselen = len(noisearray)
+    noisei = 0
+
     if opt.erasing_p>0:
         transform1 = transform1 +  [RandomErasing(probability = opt.erasing_p, mean=[0.0, 0.0, 0.0])]
 
@@ -163,16 +187,16 @@ def getdatasets(opt):
 
     datasets = []
     
-    Par_train.times +=1
-    if Par_train.times == 1:
-        Par_train.foldeList =os.listdir(opt.data_dir + target_drone)
-        random.shuffle(Par_train.foldeList)
-    elif Par_train.times  * MINI > 700:
-        Par_train.times = 1
-        Par_train.foldeList =os.listdir(opt.data_dir + target_drone)
-        random.shuffle(Par_train.foldeList)
+    para.times +=1
+    if para.times == 1:
+        foldeList =os.listdir(opt.data_dir + target_drone)
+        random.shuffle(foldeList)
+    elif times  * MINI > 700:
+        para.times = 1
+        foldeList =os.listdir(opt.data_dir + target_drone)
+        random.shuffle(foldeList)
 
-    for fi,folder_name in enumerate(Par_train.foldeList,0):
+    for fi,folder_name in enumerate(foldeList,0):
         if fi% 10 == 0 :
             print('………………reading………………:%d/%d'%(fi,len(os.listdir(opt.data_dir + target_drone))))
     
@@ -201,34 +225,48 @@ def getdatasets(opt):
         anglen = len(angrolist)
         
         andronelist =  os.listdir(anfolder_root)
-        for x,i in enumerate([37,42,47,52],0):
+        for x,i in enumerate(grolist):
+        #for x,i in enumerate([37,42,47,52],0):
             #range(53)
-            img_name = os.listdir(folder_root)[i]
+            img_name = os.listdir(folder_root)[0]
             
             #读取drone图片
             drone_view = Image.open(folder_root + '/' + img_name)          
             drone_view = drone_view.convert('RGB')
             drone_tensor = transform1(drone_view)
             
-            #get satellite pic
-            satellite_view = Image.open(opt.data_dir + target_polar + '/' + folder_name+ '/' + satlist[x % slen])          
+            if para.useNoise and noisei < noiselen and folder_name == noisearray[noisei][0]:
+            #如果要引入误差图像
+                noisefolder = noisearray[noisei][1]
+                satellite_view = Image.open(opt.data_dir + target_polar + '/' + noisefolder+ '/' + satlist[x % slen])    
+                noisei+=1             
+            else:
+                #get satellite pic
+                satellite_view = Image.open(opt.data_dir + target_polar + '/' + folder_name+ '/' + satlist[x % slen])          
             satellite_view = satellite_view.convert('RGB')
             satellite_tensor = transformpolar(satellite_view)
           
             #get ground pic
-            ground_view = Image.open(opt.data_dir + target_ground + '/' + folder_name + '/' + grolist[x % glen])          
+            ground_view = Image.open(opt.data_dir + target_ground + '/' + folder_name + '/' + grolist[x])          
             ground_view = ground_view.convert('RGB')
             ground_tensor = transform1(ground_view)
             
             #show_data.show( drone_tensor.unsqueeze(0), satellite_tensor.unsqueeze(0), ground_tensor.unsqueeze(0), ground_tensor.unsqueeze(0),'t1.jpg') 
             
             #an 读取drone图片
-            androne_view = Image.open(anfolder_root + '/' + andronelist[i])          
+            androne_view = Image.open(anfolder_root + '/' + andronelist[0])          
             androne_view = androne_view.convert('RGB')
             androne_tensor = transform1(androne_view)
             
-            #an get satellite pic
-            ansatellite_view = Image.open(opt.data_dir + target_polar + '/' + anfolder_name+ '/' + ansatlist[x % anslen])          
+            
+            if para.useNoise and noisei < noiselen and anfolder_name == noisearray[noisei][0]:
+            #如果要引入误差图像
+                noisefolder = noisearray[noisei][1]
+                ansatellite_view = Image.open(opt.data_dir + target_polar + '/' + noisefolder+ '/' + ansatlist[x % anslen])
+                noisei+=1       
+            else:
+                #an get satellite pic
+                ansatellite_view = Image.open(opt.data_dir + target_polar + '/' + anfolder_name+ '/' + ansatlist[x % anslen])          
             ansatellite_view = ansatellite_view.convert('RGB')
             ansatellite_tensor = transformpolar(ansatellite_view)
           

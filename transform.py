@@ -10,6 +10,12 @@ target_test_satellite = '../data/test/gallery_satellite'
 polar_test_satellite = '../data/test/gallery_polar_satellite'
 polar_satellite = '../data/train/polar_satellite'
 
+
+target_drone = '../data/train/drone'
+target_test_drone = '../data/test/gallery_drone'
+polar_drone = '../data/train/polar_drone'
+polar_test_drone = '../data/test/gallery_polar_drone'
+
 class Conversion:
     def __init__(self,T_x ,T_y ,x_0 ,y_0 ,d_thita ,d_r,):
         self.img = None
@@ -81,18 +87,21 @@ img  = Conversion(T_x ,T_y ,x_0 ,y_0 ,d_thita ,d_r)
 #        for w in range(T_x):
 #            result[w][h][i] = tmp[w][h]
 
-foldeList =os.listdir(target_satellite)
+foldeList =os.listdir(target_drone)
+if not os.path.isdir(polar_drone):
+    os.mkdir(polar_drone)
 for folder_name in foldeList:
-    fileName = os.listdir( target_satellite + '/' +folder_name)[1]
-    img_path = target_satellite + '/' + folder_name + '/' + fileName
+    fileName = os.listdir( target_drone + '/' +folder_name)[0]
+    img_path = target_drone + '/' + folder_name + '/' + fileName
     print('processing: ' + folder_name + '/' + fileName)
     sate_view = Image.open(img_path)          
-    #sate_view = sate_view.convert('RGB')
-    #sate_view = sate_view.resize((H,W))
-    #sate_view = np.asarray(sate_view)
-    #result = img.cal(sate_view)
-    #result = Image.fromarray(np.uint8(result))
+    sate_view = sate_view.convert('RGB')
+    sate_view = sate_view.resize((H,W))
+    sate_view = np.asarray(sate_view)
+    result = img.cal(sate_view)
+    result = Image.fromarray(np.uint8(result))
     
-    if not os.path.isdir(polar_satellite  + '/' + folder_name):
-        os.mkdir(polar_satellite  + '/' + folder_name)
-    sate_view.save(polar_satellite  + '/' + folder_name + '/' + 'polar.jpg')
+    if not os.path.isdir(polar_drone  + '/' + folder_name):
+        os.mkdir(polar_drone  + '/' + folder_name)
+    result.save(polar_drone  + '/' + folder_name + '/' + 'polar.jpg')
+    break

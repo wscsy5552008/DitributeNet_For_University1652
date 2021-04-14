@@ -207,8 +207,8 @@ def train_model(model, optimizer, scheduler, num_epochs=50):
               
             DSLoss = 0.0
             GDLoss = 0.0
-            result1 = model(satellite = s1, ground = g1,drone = d1)
-            result2 = model(satellite = s2, ground = g2,drone = d2)
+            result1 = model(satellite = s1, ground = g1, drone = d1)
+            result2 = model(satellite = s2, ground = g2, drone = d2)
                   
             feature_loss = torch.zeros(size=(1,1),dtype = float)
             unsertainty_loss =  torch.zeros(size=(1,1),dtype = float) 
@@ -396,8 +396,9 @@ if __name__ == '__main__':
     if IS_DIS_Net:
         model = three_view_net(use_gpu=use_gpu).to(device)
     else :
-        model = three_view_resNet(use_gpu=use_gpu).to(device)
-    model.load_state_dict(torch.load(MODELPATH))
+        model = three_view_resNet(resnetNum = 34).to(device)
+        opt.lr*=10
+    #model.load_state_dict(torch.load(MODELPATH))
 
     # For resume:
     if start_epoch>=40:

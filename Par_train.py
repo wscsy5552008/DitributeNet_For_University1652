@@ -6,11 +6,12 @@ Created on Sun Mar 21 13:59:30 2021
 """
 
 #set hyperparameter
+useNoise=True
 foldeList=None 
-IS_DIS_Net = True
+IS_DIS_Net = False
 times = 0
-MINI = 50
-EPOCH = 20 * 14#700/MINI
+MINI = 100
+EPOCH = 20 * 7#700/MINI
 BATCH_SIZE = 50
 LR = 0.01
 K=10
