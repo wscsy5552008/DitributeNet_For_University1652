@@ -116,7 +116,7 @@ class TripletUncertaintyLoss(nn.Module):
        
 def SampleLoss(samples,target):
     #[N*samples向量] and meansTarget
-    totalLoss = torch.zeros(1,dtype = target.dtype,requires_grad=True)
+    totalLoss = torch.ones(1,dtype = target.dtype,requires_grad=True)
     if USE_GPU:
         totalLoss = Variable(totalLoss.cuda().detach())
     #totalSample = samples[0]
@@ -138,8 +138,8 @@ def FeaturesLoss(manchor,sanchor,mpositive,spositvie,mnegative,snegative,K = 1):
     #print("FeatureLoss:%f"%totalLoss)
     #TripletLoss(manchor, mpositive, mnegative)
     totalLoss = totalLoss + K * SampleLoss(sanchor, manchor)
-    totalLoss = totalLoss + K * SampleLoss(sanchor, mpositive)
-    totalLoss = totalLoss + K * TriFrobeniusLoss(AvgSamples(sanchor), AvgSamples(spositvie), AvgSamples(snegative))
+    #totalLoss = totalLoss + K * SampleLoss(sanchor, mpositive)
+    #totalLoss = totalLoss + K * TriFrobeniusLoss(AvgSamples(sanchor), AvgSamples(spositvie), AvgSamples(snegative))
     #print("FeatureLossForSample:%f"%totalLoss)
     return totalLoss
     

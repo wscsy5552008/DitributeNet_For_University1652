@@ -22,11 +22,11 @@ class dis_net(nn.Module):
         super(dis_net, self).__init__() 
 
         if resnetNum == 18:
-            self.model= models.resnet34(pretrained=preTrain)
+            self.model= models.resnet18(pretrained=preTrain)
         elif resnetNum == 34:
             self.model= models.resnet34(pretrained=preTrain)
         elif resnetNum == 50:
-            self.model= models.resnet34(pretrained=preTrain)
+            self.model= models.resnet50(pretrained=preTrain)
         else:
             print("Error: only support resnet 18/34/50, please varify your settings!")
             exit()
@@ -94,34 +94,39 @@ class tow_view_net(nn.Module):
     def __init__(self, share = False,num_classes = 1024,use_gpu=USE_GPU, preTrain = False,resnetNum = 50):
         super(tow_view_net, self).__init__() 
         self.model_1 = dis_net(num_classes = num_classes,use_gpu=use_gpu, preTrain = preTrain,resnetNum = resnetNum)
+        self.disblock_1 = DisBlock(in_channel=512,  out_channel = 512,num_samples = 10,use_gpu=USE_GPU)
         if share:
             self.model_2 = self.model_1
+            self.disblock_2 = self.disblock_1
         else:
             self.model_2 = dis_net(num_classes = num_classes,use_gpu=use_gpu, preTrain = preTrain,resnetNum = resnetNum)
+            self.disblock_2 = DisBlock(in_channel=512,  out_channel = 512,num_samples = 10,use_gpu=USE_GPU)
 
     def forward(self, x1 = None,x2 = None):
         if x1 == None:
             y1 = None
         else:
             y1 = self.model_1(x1)
+            y1 = self.disblock_2(y1)
         if x2 == None:
             y2 = None
         else:
             y2 = self.model_2(x2)
+            y2 = self.disblock_2(y2)
         return y1,y2   
         
 class three_view_net(nn.Module):
-    def __init__(self, share = False,class_num = 1024,use_gpu=USE_GPU, preTrain = False,resnetNum = 50):
+    def __init__(self, share = False,class_num = 1024,use_gpu=USE_GPU, preTrain = True,resnetNum = 50):
         super(three_view_net, self).__init__() 
 
-        #self.model_1 =  dis_net( preTrain = False,resnetNum = 50)
-        #self.model_2 =  dis_net( preTrain = False,resnetNum = 50)
-        self.model_1 =  ft_net(class_num, stride = 1,pool = 'avg')
-        self.model_2 =  ft_net(class_num, stride = 1,pool = 'avg')
+        self.model_1 =  dis_net( preTrain = preTrain,resnetNum = resnetNum)
+        self.model_2 =  dis_net( preTrain = preTrain,resnetNum = resnetNum)
+        #self.model_1 =  ft_net(class_num, stride = 1,pool = 'avg')
+        #self.model_2 =  ft_net(class_num, stride = 1,pool = 'avg')
         self.model_3 = self.model_1
         self.classifier = None#ClassBlock(2048, 701, 0.75)
-        self.disblock_1 = DisBlock(in_channel=2048,  out_channel = 2048,num_samples = 10,use_gpu=USE_GPU)
-        self.disblock_2 = DisBlock(in_channel=2048,  out_channel = 2048,num_samples = 10,use_gpu=USE_GPU)
+        self.disblock_1 = DisBlock(in_channel=512,  out_channel = 512,num_samples = 10,use_gpu=USE_GPU)
+        self.disblock_2 = DisBlock(in_channel=512,  out_channel = 512,num_samples = 10,use_gpu=USE_GPU)
         self.disblock_3 = self.disblock_1
 
 

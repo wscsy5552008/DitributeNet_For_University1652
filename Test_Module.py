@@ -13,7 +13,7 @@ import faiss
 import torch
 from Data_presolveing import getsatedatasets, getgrounddatasets, getdronedatasets,getpolarsatedatasets 
 version =  torch.__version__
-MODELPATH = "./model/trained/net_000.pth"
+MODELPATH = "./model/three_view/net_008.pth"
 load = False
 
 def savedata(path,variable):
@@ -328,13 +328,14 @@ def getNoisePair(search,datasets,percentage):
                    
 if __name__ == '__main__':
     if IS_DIS_Net:
-        model = three_view_net()
+        model = three_view_net(resnetNum=18)
     else:
         model = three_view_resNet()
     model.load_state_dict(torch.load(MODELPATH))
-    #cal(model)
-    #test_two(search='satellite',datasets='drone')
-    #test_two(search='satellite',datasets='ground')
-    #test_two(search='ground',datasets='satellite')
-    getNoisePair(search='drone',datasets='satellite',percentage= 0.2)
+    cal(model)
+    test_two(search='polar',datasets='drone')
+    test_two(search='drone',datasets='polar')
+    test_two(search='polar',datasets='ground')
+    test_two(search='ground',datasets='polar')
+    #getNoisePair(search='drone',datasets='satellite',percentage= 0.2)
     #test(model)

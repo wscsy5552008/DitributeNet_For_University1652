@@ -17,16 +17,16 @@ from utils_from_others.random_erasing import RandomErasing
 import Par_train as para
 from Par_train import IS_DIS_Net, MINI,times,useNoise,foldeList
 import show_data
-target_drone = 'data/train/drone'
-target_ground = 'data/train/street'
-target_satellite = 'data/train/satellite'
-target_polar = 'data/train/polar_satellite'
+target_test_drone = '../data/train/drone'
+target_test_ground = '../data/train/street'
+target_test_satellite = '../data/train/satellite'
+target_test_polar = '../data/train/polar_satellite'
 #target_root = 'data/train/google'
-
+'''
 target_test_satellite = '../data/test/gallery_satellite'
 target_test_drone = '../data/test/gallery_drone'
 target_test_ground = '../data/test/gallery_street'
-target_test_polar = '../data/test/gallery_polar_satellite'
+target_test_polar = '../data/test/gallery_polar_satellite'''
 def pad(inp, pad = 3):
     #print(inp.size)
     h, w = inp.size
@@ -72,7 +72,7 @@ def gettestdatasets(model,path,view):
     foldeList =os.listdir(path)
     #random.shuffle(foldeList)
     for fi,folder_name in enumerate(foldeList,0):
-        if fi >100:
+        if fi >1000:
             break
         folder_root = path + '/' + folder_name
         if not os.path.isdir(folder_root):
@@ -189,14 +189,14 @@ def getdatasets(opt):
     
     para.times +=1
     if para.times == 1:
-        foldeList =os.listdir(opt.data_dir + target_drone)
-        random.shuffle(foldeList)
+        para.foldeList =os.listdir(opt.data_dir + target_drone)
+        random.shuffle(para.foldeList)
     elif times  * MINI > 700:
         para.times = 1
-        foldeList =os.listdir(opt.data_dir + target_drone)
-        random.shuffle(foldeList)
+        para.foldeList =os.listdir(opt.data_dir + target_drone)
+        random.shuffle(para.foldeList)
 
-    for fi,folder_name in enumerate(foldeList,0):
+    for fi,folder_name in enumerate(para.foldeList,0):
         if fi% 10 == 0 :
             print('………………reading………………:%d/%d'%(fi,len(os.listdir(opt.data_dir + target_drone))))
     

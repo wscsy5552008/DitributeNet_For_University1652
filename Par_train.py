@@ -6,9 +6,10 @@ Created on Sun Mar 21 13:59:30 2021
 """
 
 #set hyperparameter
-useNoise=True
+useNoise=False
 foldeList=None 
-IS_DIS_Net = False
+IS_DIS_Net = True
+TRI_VIEW = False
 times = 0
 MINI = 100
 EPOCH = 20 * 7#700/MINI

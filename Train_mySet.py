@@ -31,9 +31,9 @@ except ImportError: # will be 3.x series
     print('This is not an error. If you want to use low precision, i.e., fp16, please install the apex with cuda support (https://github.com/NVIDIA/apex) and update pytorch to 1.0')
 
 #MODELPATH = "C:\\Users\\Jinda\\Desktop\\源代码\\university1652-model\\three_view_long_share_d0.75_256_s1_google\\net_119.pth"
-from Model_distributeNet import three_view_net,three_view_resNet
+from Model_distributeNet import three_view_net,three_view_resNet,two_view_net
 from LossFunc_lossCalc import FeaturesLoss,TripletUncertaintyLoss,FeaturesLossWithoutSample
-from Par_train import EPOCH, USE_GPU, MINI, IS_DIS_Net
+from Par_train import EPOCH, USE_GPU, MINI, TRI_VIEW
 import Par_train as para
 from Data_presolveing import getdatasets
 from utils import load_network, save_network
@@ -105,7 +105,7 @@ parser.add_argument('--start', default=0, type=int, help='the first K epoch that
 #################################################################
 opt = parser.parse_args()
 
-MODELPATH = 'model\\Unive1652\\net_res_preTrain.pth'
+MODELPATH = 'model\\Unive1652\\net_dis_preTrain.pth'
 
 if opt.resume:
     model, opt, start_epoch = load_network(opt.name, opt)
@@ -232,11 +232,11 @@ def train_model(model, optimizer, scheduler, num_epochs=50):
                 sr2,gr2,dr2 = result2
                 
                 #1 drone and satellite
-                feature_loss_ds1 =  FeaturesLoss(
-                            manchor=dr1[0],sanchor=dr1[2],
-                            mpositive=sr1[0],spositvie=sr1[2],
-                            mnegative=sr2[0],snegative=sr2[2])
-                DSLoss = DSLoss + feature_loss_ds1
+                #feature_loss_ds1 =  FeaturesLoss(
+                #            manchor=dr1[0],sanchor=dr1[2],
+                #            mpositive=sr1[0],spositvie=sr1[2],
+                #            mnegative=sr2[0],snegative=sr2[2])
+                #DSLoss = DSLoss + feature_loss_ds1
                 
                 #1 ground and satellite. drone detach?No
                 
@@ -247,11 +247,11 @@ def train_model(model, optimizer, scheduler, num_epochs=50):
                 GDLoss = GDLoss + feature_loss_gs1
                 
                 #2 drone and satellite
-                feature_loss_ds2 =  FeaturesLoss(
-                            manchor=dr2[0],sanchor=dr2[2],
-                            mpositive=sr2[0],spositvie=sr2[2],
-                            mnegative=sr1[0],snegative=sr2[2])
-                DSLoss = DSLoss + feature_loss_ds2
+                #feature_loss_ds2 =  FeaturesLoss(
+                #            manchor=dr2[0],sanchor=dr2[2],
+                #            mpositive=sr2[0],spositvie=sr2[2],
+                #            mnegative=sr1[0],snegative=sr2[2])
+                #DSLoss = DSLoss + feature_loss_ds2
                 
                 
                 #2 ground and satellite
@@ -351,8 +351,7 @@ def train_model(model, optimizer, scheduler, num_epochs=50):
         logfile.close()
         scheduler.step()
         time_elapsed = time.time() - since
-        if epoch%5 == 0:
-            save_network(model, opt.name, epoch + 1)
+        save_network(model, opt.name, epoch + 1)
         print('Training complete in .%0fm :%.0fs : avgDroneSatLoss:%.05f | avgDroneGroLoss:%.05f'%(
             time_elapsed // 60, time_elapsed % 60, totalDs/len(train_loader), totalGD/len(train_loader)))
         print()
@@ -394,11 +393,15 @@ if __name__ == '__main__':
 
     #model = three_view_net(use_gpu=use_gpu).to(device)
     if IS_DIS_Net:
-        model = three_view_net(use_gpu=use_gpu).to(device)
+        if TRI_VIEW:
+            model = three_view_net(use_gpu=use_gpu,resnetNum=18).to(device)
+        else :   
+            model = two_view_net(use_gpu=use_gpu,resnetNum=18).to(device)
+
     else :
         model = three_view_resNet(resnetNum = 34).to(device)
         opt.lr*=10
-    #model.load_state_dict(torch.load(MODELPATH))
+        #model.load_state_dict(torch.load(MODELPATH))
 
     # For resume:
     if start_epoch>=40:
