@@ -5,7 +5,7 @@ Created on Sun Mar 21 13:58:27 2021
 @author: Jinda
 """
 from torchvision.transforms.transforms import Resize
-from Model_distributeNet import dis_net as DisNet, three_view_net
+from Model_distributeNet import three_view_net
 import torch
 import os
 import numpy as np
@@ -15,18 +15,17 @@ import random
 from utils_from_others.autoaugment import ImageNetPolicy
 from utils_from_others.random_erasing import RandomErasing
 import Par_train as para
-from Par_train import IS_DIS_Net, MINI,times,useNoise,foldeList
-import show_data
-target_test_drone = '../data/train/drone'
-target_test_ground = '../data/train/street'
-target_test_satellite = '../data/train/satellite'
-target_test_polar = '../data/train/polar_satellite'
+
+target_drone = '/data/train/drone'
+target_ground = '/data/train/street'
+target_satellite = '/data/train/satellite'
+target_polar = '/data/train/polar_satellite'
 #target_root = 'data/train/google'
-'''
+
 target_test_satellite = '../data/test/gallery_satellite'
 target_test_drone = '../data/test/gallery_drone'
 target_test_ground = '../data/test/gallery_street'
-target_test_polar = '../data/test/gallery_polar_satellite'''
+target_test_polar = '../data/test/gallery_polar_satellite'
 def pad(inp, pad = 3):
     #print(inp.size)
     h, w = inp.size
@@ -45,7 +44,6 @@ def getgrounddatasets(model):
 
 def getdronedatasets(model):
     return gettestdatasets(model,target_test_drone,'drone')
-    
     
 def gettestdatasets(model,path,view):
     
@@ -111,17 +109,17 @@ def gettestdatasets(model,path,view):
             #    tmp+=item
             #result = tmp/i
         if view=='ground':
-            if IS_DIS_Net:
+            if para.IS_DIS_Net:
                 result = gr[0]
             else:
                 result = gr
         elif view=='satellite' or view == 'polar':
-            if IS_DIS_Net:
+            if para.IS_DIS_Net:
                 result = sr[0]
             else:
                 result = sr
         elif view=='drone':
-            if IS_DIS_Net:
+            if para.IS_DIS_Net:
                 result = dr[0]
             else:
                 result = dr
@@ -183,7 +181,8 @@ def getdatasets(opt):
 
     if opt.DA:
         transform1 = [ImageNetPolicy()] + transform1
-
+    if para.use_polar:
+        target_satellite = target_polar
 
     datasets = []
     
@@ -191,7 +190,7 @@ def getdatasets(opt):
     if para.times == 1:
         para.foldeList =os.listdir(opt.data_dir + target_drone)
         random.shuffle(para.foldeList)
-    elif times  * MINI > 700:
+    elif  para.times  *  para.MINI > 700:
         para.times = 1
         para.foldeList =os.listdir(opt.data_dir + target_drone)
         random.shuffle(para.foldeList)
@@ -207,10 +206,10 @@ def getdatasets(opt):
         folder_root = opt.data_dir + target_drone + '/' + folder_name
         if not os.path.isdir(folder_root):
             continue
-        if fi >=MINI:
+        if fi >= para.MINI:
             break
         #satelite item count
-        satlist = os.listdir(opt.data_dir + target_polar + '/' + folder_name)
+        satlist = os.listdir(opt.data_dir + target_satellite + '/' + folder_name)
         slen = len(satlist)
         #gound item count
         grolist = os.listdir(opt.data_dir + target_ground + '/' + folder_name)
@@ -218,7 +217,7 @@ def getdatasets(opt):
             
         
         #another satelite item count
-        ansatlist = os.listdir(opt.data_dir + target_polar + '/' + anfolder_name)
+        ansatlist = os.listdir(opt.data_dir + target_satellite + '/' + anfolder_name)
         anslen = len(ansatlist)
         #another gound item count
         angrolist = os.listdir(opt.data_dir + target_ground + '/' + anfolder_name)
@@ -238,11 +237,11 @@ def getdatasets(opt):
             if para.useNoise and noisei < noiselen and folder_name == noisearray[noisei][0]:
             #如果要引入误差图像
                 noisefolder = noisearray[noisei][1]
-                satellite_view = Image.open(opt.data_dir + target_polar + '/' + noisefolder+ '/' + satlist[x % slen])    
+                satellite_view = Image.open(opt.data_dir + target_satellite + '/' + noisefolder+ '/' + satlist[x % slen])    
                 noisei+=1             
             else:
                 #get satellite pic
-                satellite_view = Image.open(opt.data_dir + target_polar + '/' + folder_name+ '/' + satlist[x % slen])          
+                satellite_view = Image.open(opt.data_dir + target_satellite + '/' + folder_name+ '/' + satlist[x % slen])          
             satellite_view = satellite_view.convert('RGB')
             satellite_tensor = transformpolar(satellite_view)
           
@@ -262,11 +261,11 @@ def getdatasets(opt):
             if para.useNoise and noisei < noiselen and anfolder_name == noisearray[noisei][0]:
             #如果要引入误差图像
                 noisefolder = noisearray[noisei][1]
-                ansatellite_view = Image.open(opt.data_dir + target_polar + '/' + noisefolder+ '/' + ansatlist[x % anslen])
+                ansatellite_view = Image.open(opt.data_dir + target_satellite + '/' + noisefolder+ '/' + ansatlist[x % anslen])
                 noisei+=1       
             else:
                 #an get satellite pic
-                ansatellite_view = Image.open(opt.data_dir + target_polar + '/' + anfolder_name+ '/' + ansatlist[x % anslen])          
+                ansatellite_view = Image.open(opt.data_dir + target_satellite + '/' + anfolder_name+ '/' + ansatlist[x % anslen])          
             ansatellite_view = ansatellite_view.convert('RGB')
             ansatellite_tensor = transformpolar(ansatellite_view)
           

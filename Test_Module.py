@@ -6,32 +6,32 @@ Created on Fri Apr  2 16:25:04 2021
 """
 
 from __future__ import print_function, division
-from Par_train import IS_DIS_Net
-from Model_distributeNet import three_view_net, three_view_resNet
+import Par_train as para
+from Model_distributeNet import three_view_net, three_view_resNet, two_view_net
 import numpy as np
 import faiss
 import torch
 from Data_presolveing import getsatedatasets, getgrounddatasets, getdronedatasets,getpolarsatedatasets 
 version =  torch.__version__
-MODELPATH = "./model/three_view/net_008.pth"
+MODELPATH = "./model/three_view/net_070.pth"
 load = False
 
 def savedata(path,variable):
     torch.save(variable,path)
 
 def cal(model):
-    print("test_vector_sate")
-    slabelsets, svectorsets = getsatedatasets(model)
-    torch.save(slabelsets,"test_vector/satelabel.dt")
-    torch.save(svectorsets,"test_vector/satevector.dt")
+    #print("test_vector_sate")
+    #slabelsets, svectorsets = getsatedatasets(model)
+    #torch.save(slabelsets,"test_vector/satelabel.dt")
+    #torch.save(svectorsets,"test_vector/satevector.dt")
     print("test_vector_polar")
     slabelsets, svectorsets = getpolarsatedatasets(model)
     torch.save(slabelsets,"test_vector/polarsatelabel.dt")
     torch.save(svectorsets,"test_vector/polarsatevector.dt")
-    print("test_vector_drone")
-    slabelsets, svectorsets = getdronedatasets(model)
-    torch.save(slabelsets,"test_vector/dronelabel.dt")
-    torch.save(svectorsets,"test_vector/dronevector.dt")
+    #print("test_vector_drone")
+    #slabelsets, svectorsets = getdronedatasets(model)
+    #torch.save(slabelsets,"test_vector/dronelabel.dt")
+    #torch.save(svectorsets,"test_vector/dronevector.dt")
     print("test_vector_ground")
     slabelsets, svectorsets = getgrounddatasets(model)
     torch.save(slabelsets,"test_vector/groundlabel.dt")
@@ -327,15 +327,24 @@ def getNoisePair(search,datasets,percentage):
             break
                    
 if __name__ == '__main__':
-    if IS_DIS_Net:
-        model = three_view_net(resnetNum=18)
+    views = 1
+    device = torch.device("cpu")
+    use_gpu =para.USE_GPU
+    if use_gpu:
+        device = torch.device("cuda")
+        use_gpu = torch.cuda.is_available()
+    if para.IS_DIS_Net:
+        if views == 3:
+            model = three_view_net(use_gpu=para.USE_GPU,resnetNum=18).to(device)
+        else :   
+            model = two_view_net(use_gpu=para.USE_GPU,resnetNum=18).to(device)
     else:
         model = three_view_resNet()
     model.load_state_dict(torch.load(MODELPATH))
     cal(model)
-    test_two(search='polar',datasets='drone')
-    test_two(search='drone',datasets='polar')
-    test_two(search='polar',datasets='ground')
+    #test_two(search='polar',datasets='drone')
+    #test_two(search='drone',datasets='polar')
+    #test_two(search='polar',datasets='ground')
     test_two(search='ground',datasets='polar')
     #getNoisePair(search='drone',datasets='satellite',percentage= 0.2)
     #test(model)

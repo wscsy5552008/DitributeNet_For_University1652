@@ -44,8 +44,6 @@ def showMid(d,path):
     final = Image.fromarray(whole.astype('uint8'))
     final.save(path + '.jpg')
     
-    
-    
 def show(d1,d2,d3,d4,path):
     
     npad = 3

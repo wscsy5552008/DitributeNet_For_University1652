@@ -44,7 +44,7 @@ class FrobeniusTriLoss(torch.nn.Module):
     TwoView Frobenius loss function.
     """
 
-    def __init__(self, margin = 4.0,use_gpu=USE_GPU):
+    def __init__(self, margin = 10.0,use_gpu=USE_GPU):
         super(FrobeniusTriLoss, self).__init__()
         self.margin = margin
         self.use_gpu = use_gpu
@@ -65,7 +65,8 @@ class FrobeniusTriLoss(torch.nn.Module):
            
         #print("FrobeniusLoss: %f"%m)
         if m < 0 :
-            m = 0
+            m = torch.zeros(1,dtype=float)
+            m.requires_grad = True
         
         t1 = torch.pow(t0, alpha * m)
         
@@ -73,47 +74,6 @@ class FrobeniusTriLoss(torch.nn.Module):
     
 TriFrobeniusLoss = FrobeniusTriLoss()
 
-class TripletUncertaintyLoss(nn.Module):
-    
-    def __init__(self,use_gpu=USE_GPU):
-        super(TripletUncertaintyLoss, self).__init__()
-        self.use_gpu = use_gpu
-        
-    def forward(self,disanchor):
-        m = len(disanchor)
-        n = len(disanchor[0])
-        #each vector has a diagno matrix
-        
-        #1/2 log(  2 pi e squre)
-        #sigma = torch.zeros(size=(1,1), dtype= float)
-        #if self.cuda == True:
-        #    sigma = Variable(sigma.cuda().detach())
-            
-        sumD = torch.ones(size=(1,1), dtype= disanchor.dtype, requires_grad=True)
-        if self.use_gpu == True:
-            sumD = Variable(sumD.cuda().detach())
-            
-            
-        for i in range(m):   
-            #batch 
-            for j in range(n):
-                if (disanchor[i][j] != 0 and disanchor[i][j] != 1):
-                    sumD = sumD + torch.log(disanchor[i][j])
-                
-        totalLoss = m* n/2 *(math.log(2*math.pi) + 1) + 1/2 * sumD
-        #totalLoss = torch.log(sigma)
-        if totalLoss > 0:
-            return torch.log(1+totalLoss)
-        else :
-            return torch.ones(1)
-    
-# out = (长度为numclasss的均值向量，方差向量，) 
-# result = (out1,out2,out3,out4,out5,out6)
-
-#def TripletLoss(anchor,positive,negative):
-    
-#    return triplet_loss(anchor, positive, negative)
-       
 def SampleLoss(samples,target):
     #[N*samples向量] and meansTarget
     totalLoss = torch.ones(1,dtype = target.dtype,requires_grad=True)
@@ -134,12 +94,15 @@ def AvgSamples(samples):
 
 def FeaturesLoss(manchor,sanchor,mpositive,spositvie,mnegative,snegative,K = 1):
     #anchor -> (mean,[sample])
-    totalLoss = TriFrobeniusLoss(manchor,mpositive,mnegative, 0.01)#CrossTowviewLoss(manchor, mpositive, 1) + CrossTowviewLoss(manchor, mnegative, 0)
+    totalLoss = TriFrobeniusLoss(manchor,mpositive,mnegative, 1)
     #print("FeatureLoss:%f"%totalLoss)
-    #TripletLoss(manchor, mpositive, mnegative)
-    totalLoss = totalLoss + K * SampleLoss(sanchor, manchor)
-    #totalLoss = totalLoss + K * SampleLoss(sanchor, mpositive)
-    #totalLoss = totalLoss + K * TriFrobeniusLoss(AvgSamples(sanchor), AvgSamples(spositvie), AvgSamples(snegative))
+    
+    #考虑以下anchor应该不能靠过来
+    ma,mp = Variable(manchor.detach()),Variable(mpositive.detach())
+    
+    #totalLoss = totalLoss + K * SampleLoss(sanchor, ma)
+    #totalLoss = totalLoss + K * SampleLoss(sanchor, mp)
+    
     #print("FeatureLossForSample:%f"%totalLoss)
     return totalLoss
     
@@ -148,6 +111,30 @@ def FeaturesLossWithoutSample(manchor,mpositive,mnegative):
     totalLoss = TriFrobeniusLoss(manchor,mpositive,mnegative, 0.01) #CrossTowviewLoss(manchor, mpositive, 1) + CrossTowviewLoss(manchor, mnegative, 0)
     return totalLoss
 
-def UncertaintyLoss(disanchor):
-    loss = TripletUncertaintyLoss()
-    return loss(disanchor)
+def UncertaintyLoss(disanchor,use_gpu = USE_GPU):
+
+    batch_size = len(disanchor)
+    n = len(disanchor[0])
+    #each vector has a diagno matrix
+    
+    #1/2 log(  2 pi e squre)
+    #sigma = torch.zeros(size=(1,1), dtype= float
+        
+    sumD = torch.zeros(size=(1,1), dtype= disanchor.dtype, requires_grad=True)
+    if use_gpu == True:
+        sumD = Variable(sumD.cuda().detach())
+        
+    for i in range(batch_size):   
+        #batch 
+        for j in range(n):
+            if (disanchor[i][j] != 0 and disanchor[i][j] != 1):
+                #这是按照原来论文设计的 
+                sumD = sumD + torch.log(disanchor[i][j])
+                #以下是改进的，希望每个disanchor都变成1
+            elif disanchor[i][j] == 0:
+                sumD = sumD + torch.log(2-disanchor[i][j])
+
+            
+    #这是按照原来论文设计的 totalLoss = batch_size * n/2 *(math.log(2*math.pi) + 1) + 1/2 * sumD
+    #以下是我修改的
+    return sumD
